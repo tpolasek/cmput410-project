@@ -41,4 +41,4 @@ class Post(models.Model):
 	content = models.TextField()
 
 	def __unicode__(self):
-		return "%s, %i" % (self.author.username, self.id)
+		return "%s, %i" % (self.author.user.username, self.id)
