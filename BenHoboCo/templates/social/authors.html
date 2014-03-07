@@ -1,0 +1,34 @@
+{% extends 'social/base.html' %}
+{% block block_body %}
+
+    {% if user_posts %}
+        <ul>
+        {% for p in user_posts %}
+            <li> <p><b>Author:</b> {{ p.author.user.username }}  </p>
+                <p><b>Content:</b> {{ p.content }}</p>
+            </li>
+        {% endfor %}
+        </ul>
+    {% endif %}
+
+    {% if authors %}
+        <h2>Authors</h2>
+        <ul>
+        {% for a in authors %}
+            <li> <p> {{ a.user.username }} </p></li>
+        {% endfor %}
+        </ul>
+    {% endif %}
+
+    {% if author %}
+        <h1>{{ author.user.username }}</h1>
+        <p><b>Email:</b> {{ author.user.email }}</p>
+
+    {% endif %}
+
+    {% if post %}
+        <p><b>Author:</b> {{ post.author.user.username }}</p>
+        <p><b>Content: </b> {{ post.content }} </p>
+    {% endif %}
+
+{% endblock %}
