@@ -80,3 +80,7 @@ def get_author_posts(request, author_name, post_id = None ):
 def register(request):
     context = RequestContext(request)
     return render_to_response('social/register.html', {}, context)
+
+def login(request):
+    context = RequestContext(request)
+    return render_to_response('social/login.html', {}, context)

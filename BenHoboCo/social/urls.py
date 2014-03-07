@@ -13,4 +13,5 @@ urlpatterns = patterns('',
     url(r'^authors/(?P<author_name>[-\w]+)/images/$',views.get_author_images, name="author_images"),
     url(r'^authors/(?P<author_name>[-\w]+)/images/(?P<image_id>\w+)/$',views.get_author_images, name="authors_specific_image"),
     url(r'^register/$', views.register),
+    url(r'^login/$', views.login),
 )
