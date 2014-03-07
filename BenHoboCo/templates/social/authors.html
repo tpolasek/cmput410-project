@@ -2,33 +2,51 @@
 {% block block_body %}
 <div class="row">
     {% if user_posts %}
-        <ul>
+    <ul>
         {% for p in user_posts %}
-            <li> <p><b>Author:</b> {{ p.author.user.username }}  </p>
-                <p><b>Content:</b> {{ p.content }}</p>
-            </li>
+        <li> <p><b>Author:</b> {{ p.author.user.username }}  </p>
+            <p><b>Content:</b> {{ p.content }}</p>
+        </li>
         {% endfor %}
-        </ul>
+    </ul>
     {% endif %}
 
     {% if authors %}
-        <h2>Authors</h2>
-        <ul>
+    <div class="page-header">
+        <h1>Authors</h1>
+        <p class="text-info"> These are all the <strong>fabulous social</strong> people who are part of our network!</p>
+    </div>
+    <div class="row">
         {% for a in authors %}
-            <li> <p> {{ a.user.username }} </p></li>
+        <div class="col-sm-6 col-md-4">
+            <div class="thumbnail">
+              <!-- <img data-src="holder.js/300x200" alt="..."> -->
+              <div class="caption">
+                {% if a.image %}
+                    <img src="{{ a.image.url | urlencode }}"/>
+                {% endif %}
+                <h3>{{ a.user.username }}</h3>
+
+                <p>This guy is <strong>social</strong>!</p>
+                <p>
+                    <a href="/authors/{{a.user.username}}" class="btn btn-primary" role="button">SOCIAL this person!</a>
+                </p>
+              </div>
+          </div>
+        </div>
         {% endfor %}
-        </ul>
+    </div>
     {% endif %}
 
-    {% if author %}
-        <h1>{{ author.user.username }}</h1>
-        <p><b>Email:</b> {{ author.user.email }}</p>
+  {% if author %}
+  <h1>{{ author.user.username }}</h1>
+  <p><b>Email:</b> {{ author.user.email }}</p>
 
-    {% endif %}
+  {% endif %}
 
-    {% if post %}
-        <p><b>Author:</b> {{ post.author.user.username }}</p>
-        <p><b>Content: </b> {{ post.content }} </p>
-    {% endif %}
+  {% if post %}
+  <p><b>Author:</b> {{ post.author.user.username }}</p>
+  <p><b>Content: </b> {{ post.content }} </p>
+  {% endif %}
 </div>
 {% endblock %}
