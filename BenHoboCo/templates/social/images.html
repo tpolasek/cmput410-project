@@ -1,0 +1,22 @@
+{% extends 'social/base.html' %}
+{% block block_body %}
+
+    {% if user_images %}
+        <ul>
+        {% for i in user_images %}
+            <li><p><b>Author:</b> {{ i.author.user.username }}  </p>
+                <p><b>URL:</b> {{ i.url | urlencode }}</p>
+                <p><b>Accessibility:</b> {{i.accessibility }}</p>
+            </li>
+        {% endfor %}
+        </ul>
+    {% endif %}
+
+    {% if image %}
+        <p><b>Author:</b> {{ image.author.user.username }}</p>
+        <p><b>Content: </b> {{ image.url }} </p>
+        <p><b>Accessibility:</b> {{image.accessibility }}</p>
+        <p><img src="{{ image.url | urlencode }}"/></p>
+    {% endif %}
+
+{% endblock %}

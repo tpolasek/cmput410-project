@@ -28,7 +28,7 @@ class Friend(models.Model):
 
 class Image(models.Model):
 	author = models.ForeignKey(Author, related_name="author")
-	url = models.URLField()
+	url = models.CharField(max_length=256)
 	accessibility = models.CharField( max_length=128, choices=ACCESSIBILITY_TYPES )
 
 	def __unicode__(self):
