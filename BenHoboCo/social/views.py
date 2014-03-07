@@ -76,3 +76,7 @@ def get_author_posts(request, author_name, post_id = None ):
 
     #no content
     return render_to_response('social/authors.html', context_dict, context )
+
+def register(request):
+    context = RequestContext(request)
+    return render_to_response('social/register.html', {}, context)

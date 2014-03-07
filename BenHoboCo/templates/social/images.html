@@ -1,6 +1,6 @@
 {% extends 'social/base.html' %}
 {% block block_body %}
-
+<div class="row">
     {% if user_images %}
         <ul>
         {% for i in user_images %}
@@ -18,5 +18,5 @@
         <p><b>Accessibility:</b> {{image.accessibility }}</p>
         <p><img src="{{ image.url | urlencode }}"/></p>
     {% endif %}
-
+</div>
 {% endblock %}

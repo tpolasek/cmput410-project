@@ -1,6 +1,6 @@
 {% extends 'social/base.html' %}
 {% block block_body %}
-
+<div class="row">
     {% if user_posts %}
         <ul>
         {% for p in user_posts %}
@@ -30,5 +30,5 @@
         <p><b>Author:</b> {{ post.author.user.username }}</p>
         <p><b>Content: </b> {{ post.content }} </p>
     {% endif %}
-
+</div>
 {% endblock %}
