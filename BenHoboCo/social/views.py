@@ -5,7 +5,7 @@ from django.shortcuts import render_to_response, redirect
 from django.template import RequestContext
 from django.core.exceptions import ObjectDoesNotExist
 
-from social.models import Post, Author, Image
+from social.models import Post, Author, Image, Friend
 from django.contrib.auth.models import User
 
 # Create your views here.
@@ -76,6 +76,29 @@ def get_author_posts(request, author_name, post_id = None ):
 
     #no content
     return render_to_response('social/authors.html', context_dict, context )
+
+def get_author_friends(request, author_name, friend_name = None):
+    context = RequestContext( request )
+
+    u = User.objects.get(username__icontains=author_name)
+    a = Author.objects.get(user=u)
+    context_dict = {}
+
+    if friend_name is not None:
+        try:
+            friend = Friend.objects.get(name=friend_name)
+            context_dict['friend'] = friend
+        except ObjectDoesNotExist:
+            pass # Do nothing for now
+
+        return render_to_response('social/friends.html', context_dict, context )
+
+    friend = Friend.objects.filter(author=a)
+    context_dict['user_friends'] = friend
+
+    #no content
+    return render_to_response('social/friends.html', context_dict, context )
+
 
 def register(request):
     context = RequestContext(request)

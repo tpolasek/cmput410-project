@@ -20,7 +20,7 @@ class Author(models.Model):
 
 class Friend(models.Model):
 	name = models.CharField( max_length=32 )
-	location = models.URLField()
+	location = models.CharField(max_length=256)
 	author = models.ForeignKey(Author)
 
 	def __unicode__(self):

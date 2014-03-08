@@ -1,0 +1,21 @@
+{% extends 'social/base.html' %}
+{% block block_body %}
+<div class="row">
+    {% if user_friends %}
+        <ul>
+        {% for friend in user_friends %}
+            <li><p><b>Friend:</b> {{ friend.name }}  </p>
+                <p><b>Location:</b> {{ friend.location | urlencode }}</p>
+            </li>
+        {% endfor %}
+        </ul>
+    {% endif %}
+
+    {% if friend %}
+        <li><p><b>Friend:</b> {{ friend.name }}  </p>
+            <p><b>Location:</b> {{ friend.location | urlencode }}</p>
+        </li>
+    {% endif %}
+
+</div>
+{% endblock %}
