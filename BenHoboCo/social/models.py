@@ -42,3 +42,11 @@ class Post(models.Model):
 
 	def __unicode__(self):
 		return "%s, %i" % (self.author.user.username, self.id)
+
+class Comment(models.Model):
+	user = models.OneToOneField(Author)
+	time_stamp = models.DateTimeField()
+	post = models.ForeignKey(Post)
+
+	def __unicode__(self):
+		return "%s posted a comment to Post %d" % ( user.username, post.id )
