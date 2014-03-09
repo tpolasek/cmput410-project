@@ -19,6 +19,4 @@ urlpatterns = patterns('',
 
     url(r'^authors/(?P<author_name>[-\w]+)/friends/$',views.get_author_friends, name="author_friends"),
     url(r'^authors/(?P<author_name>[-\w]+)/friends/(?P<friend_name>\w+)/$',views.get_author_friends, name="authors_specific_friend"),
-
-
 )
