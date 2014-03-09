@@ -4,6 +4,7 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render_to_response, redirect
 from django.template import RequestContext
 from django.core.exceptions import ObjectDoesNotExist
+from social.forms import UserForm, AuthorForm
 
 from social.models import Post, Author, Image, Friend
 from django.contrib.auth.models import User
@@ -100,10 +101,67 @@ def get_author_friends(request, author_name, friend_name = None):
     return render_to_response('social/friends.html', context_dict, context )
 
 
-def register(request):
-    context = RequestContext(request)
-    return render_to_response('social/register.html', {}, context)
+def user_register(request):
 
-def login(request):
+    if request.user.is_authenticated():
+        return redirect("/")
+
     context = RequestContext(request)
-    return render_to_response('social/login.html', {}, context)
+
+    registered = False
+
+    if request.method == "POST":
+        user_form = UserForm(data=request.POST)
+        author_form = AuthorForm()
+
+        if user_form.is_valid():
+            user = user_form.save()
+
+            user.set_password(user.password)
+            user.save()
+
+            author = author_form.save(commit=False)
+            author.user = user
+
+            author.save()
+
+            registered = True
+
+        else:
+            print user_form.errors
+
+    else:
+        user_form = UserForm()
+
+    context_dict = {'user_form': user_form, 'registered': registered }
+
+    return render_to_response('social/register.html', context_dict, context)
+
+def user_login(request):
+    if request.user.is_authenticated():
+        return redirect("/")
+
+    context = RequestContext(request)
+
+    if request.method == "POST":
+        username = request.POST['username']
+        password = request.POST['password']
+
+        user = authenticate(username=username, password=password)
+
+        if user is not None:
+            if user.is_active:
+                login(request, user)
+                return HttpResponseRedirect("/")
+            else:
+                return render_to_response('social/login.html', {'disabled_account':True }, context)
+        else:
+            return render_to_response('social/login.html', {'bad_details': True }, context)
+    else:
+        return render_to_response('social/login.html',{},context)
+
+@login_required
+def user_logout(request):
+    logout(request)
+
+    return HttpResponseRedirect("/")

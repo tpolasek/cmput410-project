@@ -43,9 +43,11 @@
 
                 </ul>
 
-                <ul class="nav">
+                <ul class="nav navbar-nav navbar-left">
                     {% if user.is_authenticated %}
-                    <li><a href="/social/add_category/">Add Category</a></li>
+                        <li><a href="/authors/{{ user.username }}">My Profile</a></li>
+                        <li><a href="/authors/{{ user.username }}/posts">My Posts</a></li>
+                        <li><a href="/authors/{{ user.username }}/friends">My Friends</a></li>
                     {% endif %}
                 </ul>
             </div>
