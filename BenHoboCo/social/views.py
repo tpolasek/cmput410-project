@@ -77,7 +77,7 @@ def get_author_posts(request, author_name, post_id = None ):
         except ObjectDoesNotExist:
             pass #do nothing for now
 
-        return render_to_response('social/posts.html', context_dict, context )
+        return render_to_response('social/post.html', context_dict, context )
 
     posts = Post.objects.filter(author=a)
     context_dict['user_posts'] = posts
@@ -104,6 +104,7 @@ def get_author_friends(request, author_name, friend_name = None):
 
     friend = Friend.objects.filter(author=a)
     context_dict['user_friends'] = friend
+    context_dict['author'] = a
 
     #no content
     return render_to_response('social/friends.html', context_dict, context )
@@ -112,7 +113,7 @@ def create_post(request, author_name):
     context = RequestContext(request)
     u = User.objects.get(username__icontains=author_name)
     a = Author.objects.get(user = u)
-    return render_to_response('social/post.html', {'author': a}, context)
+    return render_to_response('social/createPost.html', {'author': a}, context)
 
 
 def user_register(request):

@@ -1,20 +1,35 @@
 {% extends 'social/base.html' %}
 {% block block_body %}
 <div class="row">
+    <div class="page-header">
+        <h2>Friends of {{author.user.username}}</h2>
+    </div>
     {% if user_friends %}
-        <ul>
-        {% for friend in user_friends %}
-            <li><p><b>Friend:</b> {{ friend.name }}  </p>
-                <p><b>Location:</b> {{ friend.location | urlencode }}</p>
-            </li>
-        {% endfor %}
-        </ul>
+    {% for friend in user_friends %}
+    <div class="col-sm-6 col-md-4">
+        <div class="thumbnail">
+          <div class="caption">
+            <a href="{{friend.location | urlencode}}"><h3>{{friend.name}}</h3></a>
+        </div>
+    </div>
+    {% endfor %}
+
     {% endif %}
+    <!-- This is just a placeholder for reference.-->
+    <div class="col-sm-4 col-md-3">
+        <div class="thumbnail">
+          <div class="caption">
+            <a href="/authors/bensontrinh"><h3>bensontrinh</h3></a>
+        </div>
+    </div>
 
     {% if friend %}
-        <li><p><b>Friend:</b> {{ friend.name }}  </p>
-            <p><b>Location:</b> {{ friend.location | urlencode }}</p>
-        </li>
+    <div class="col-sm-4 col-md-3">
+        <div class="thumbnail">
+          <div class="caption">
+            <a href="{{friend.location | urlencode}}"><h3>{{friend.name}}</h3></a>
+        </div>
+    </div>
     {% endif %}
 
 </div>

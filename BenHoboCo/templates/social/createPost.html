@@ -1,0 +1,34 @@
+{% extends 'social/base.html' %}
+{% block block_body %}
+<div class="row">
+	<div class="page-header">
+		<h1>Create Post</h1>
+	</div>
+</div>
+<div class="row col-md-4 col-md-offset-3">
+	<form method="POST" action="/post/" role="form">
+		{% csrf_token %}
+		<!-- error messages for invalid post stuff here -->
+
+		<div class="form-group">
+			<label for="access" class="control-label">Accessibility Type</label>
+			<select name="access" class="form-control">
+				<option>Public</option>
+				<option>Private</option>
+				<option>Private To another author</option>
+				<option>Friends on this host</option>
+				<option>Friends</option>
+				<option>Friends of friends</option>
+			</select>
+		</div>
+		<div class="form-group">
+			<label for="content" class="control-label">Content</label>
+			<textarea class="form-control" name="content" placeholder="Enter Content"></textarea>
+		</div>
+		<div class="form-group">
+			<input type="submit" class="btn btn-primary" value="Create Post"/>
+			<a href="/authors/{{ author.user.username }}/posts" class="btn btn-default">Cancel</a>
+		</div>
+	</form>
+</div>
+{% endblock %}
