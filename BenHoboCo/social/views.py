@@ -69,6 +69,7 @@ def get_author_posts(request, author_name, post_id = None ):
     u = User.objects.get(username__icontains=author_name)
     a = Author.objects.get(user=u)
     context_dict = {}
+    context_dict['author'] = a
 
     if post_id is not None:
         try:
@@ -81,7 +82,6 @@ def get_author_posts(request, author_name, post_id = None ):
 
     posts = Post.objects.filter(author=a)
     context_dict['user_posts'] = posts
-    context_dict['author'] = a
 
     #no content
     return render_to_response('social/posts.html', context_dict, context )
