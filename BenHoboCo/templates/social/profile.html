@@ -1,0 +1,44 @@
+{% extends 'social/base.html' %}
+{% block block_body %}
+<div class="row">
+	<div class="page-header">
+		<h1>{{ author.user.username }}</h1>
+	</div>
+	<div class="col-md-4">
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<h2 class="panel-title">Profile</h2>
+			</div>
+			<ul class="list-group">
+					<li class="list-group-item">
+						{% if author.image %}
+							<img src="{{ author.image.url | urlencode }}"/> 
+						{% else %}
+							<p class="text-warning"> You have no picture!  Why not add one today? </p>
+						{% endif %}
+					</li>
+				</ul>
+		</div>
+	</div>
+	<div class="col-md-8">
+		<div class="panel panel-primary">
+			<div class="panel-heading">
+				<h2 class="panel-title">Posts</h2>
+			</div>
+			<ul class="list-group">
+				<li class="list-group-item">
+					<h4 class="list-group-item-heading"> December 25, 2013, 18:24:35 </h4>
+					<p class="list-group-item-text">This is a test example of a post</p>	
+				</li>
+				{% for post in posts %}
+					<li class="list-group-item">
+						<h4 class="list-group-item-heading"> {{ post.time_stamp }} </h4>
+						<p class="list-group-item-text">post.content</p>
+					</li>
+				{% endfor %}
+			</ul>
+		</div>
+	</div>
+</div>
+
+{% endblock %}

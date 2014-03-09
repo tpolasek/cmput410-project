@@ -31,8 +31,15 @@ def get_author(request, author_name = None):
     u = User.objects.get(username__icontains=author_name)
     a = Author.objects.get(user=u)
 
-    #Get all authors
-    return render_to_response('social/authors.html', {'author': a}, context )
+    # FOR BENSON:
+    #  We gotta get the posts for this author.
+    #  Posts should be gotten based on relationship to the user.
+    #  If current user is the author, then we can show all posts.
+    #  If current user is friend, show friend posts, etc.
+    #  If no user is logged in, show all public posts.
+
+    #Display the posts on the profile page
+    return render_to_response('social/profile.html', {'author': a, 'user': u}, context )
 
 def get_author_images(request, author_name, image_id = None ):
     context = RequestContext( request )
@@ -70,13 +77,14 @@ def get_author_posts(request, author_name, post_id = None ):
         except ObjectDoesNotExist:
             pass #do nothing for now
 
-        return render_to_response('social/authors.html', context_dict, context )
+        return render_to_response('social/posts.html', context_dict, context )
 
     posts = Post.objects.filter(author=a)
     context_dict['user_posts'] = posts
+    context_dict['author'] = a
 
     #no content
-    return render_to_response('social/authors.html', context_dict, context )
+    return render_to_response('social/posts.html', context_dict, context )
 
 def get_author_friends(request, author_name, friend_name = None):
     context = RequestContext( request )
@@ -99,6 +107,12 @@ def get_author_friends(request, author_name, friend_name = None):
 
     #no content
     return render_to_response('social/friends.html', context_dict, context )
+
+def create_post(request, author_name):
+    context = RequestContext(request)
+    u = User.objects.get(username__icontains=author_name)
+    a = Author.objects.get(user = u)
+    return render_to_response('social/post.html', {'author': a}, context)
 
 
 def user_register(request):
