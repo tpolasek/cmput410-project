@@ -28,7 +28,7 @@ def get_author(request, author_name = None):
     context = RequestContext( request )
 
      #get User object then find the Author object from it
-    u = User.objects.get(username__icontains=author_name)
+    u = User.objects.get(username__iexact=author_name)
     a = Author.objects.get(user=u)
 
     # FOR BENSON:
@@ -66,7 +66,7 @@ def get_author_posts(request, author_name, post_id = None ):
     context = RequestContext( request )
 
     #get User object then find the Author object from it
-    u = User.objects.get(username__icontains=author_name)
+    u = User.objects.get(username__iexact=author_name)
     a = Author.objects.get(user=u)
     context_dict = {}
 
