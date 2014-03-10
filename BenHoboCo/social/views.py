@@ -115,11 +115,24 @@ def add_remote_friend(request, author_name):
     a = Author.objects.get(user = u)
     return render_to_response('social/addRemoteFriend.html', {'author': a}, context)
 
-def create_post(request, author_name):
+@login_required
+def create_post(request, author_name = None ):
     context = RequestContext(request)
-    u = User.objects.get(username__iexact=author_name)
+    u = request.user
     a = Author.objects.get(user = u)
-    return render_to_response('social/createPost.html', {'author': a}, context)
+
+    context_dict = {'author': a, 'success': False }
+
+    if request.method == "POST":
+        access = request.POST['access']
+        c = request.POST['content']
+
+        p = Post(author=a, accessibility=access, content=c)
+        p.save()
+
+        context_dict['success'] = True
+
+    return render_to_response('social/createPost.html', context_dict, context)
 
 def user_register(request):
 
