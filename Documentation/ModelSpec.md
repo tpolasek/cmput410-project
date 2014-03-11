@@ -4,34 +4,34 @@ Model Specification
 Post
 ----------
 
-* Title
-* Source
-* Origin
-* Description
-* Content-Type
-* Content
-* Categories
-* Author Object
-* Comments
-* Time_stamp
-* Post ID
-* Visibility
+* (Text) Title
+* (Text/ URL) Source
+* (Text / URL) Origin
+* (Text) Description
+* (Text) Content-Type
+* (Text) Content
+* (List of Text) Categories
+* (Author Object) Author
+* (List of Comment Objects) Comments
+* (DateTime) Time_stamp
+* (GUID) Post ID
+* (Visibility Type) Visibility
 
 Comment
 ---------
 
-* Author
-* Comment Text
-* Time_stamp
-* Comment ID
+* (Author Object) Author
+* (Text) Comment Text
+* (DateTime) Time_stamp
+* (GUID) Comment ID
 
 Author
 ----------
-* Author ID
-* Author Name
-* Author Host
+* (GUID) Author ID
+* (Text) Author Name
+* (Text/URL) Author Host
 
 Friend
 ----------
-* Author
-* Friend (Also an Author object)
+* (Author Object) Author
+* (Author Object) Friend
