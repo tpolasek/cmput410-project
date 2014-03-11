@@ -45,7 +45,7 @@
 			<ul class="list-group">
 					<li class="list-group-item">
 						{% if author.image %}
-							<img src="{{ author.image.url | urlencode }}"/> 
+							<img style="width: 75%; height: auto" src="{{ author.image.url | urlencode }}"/> 
 						{% elif user.username == author.user.username %}
 							<p class="text-warning"> You have no picture!  Why not add one today? </p>
 							<form action="/authors/{{ user.username }}/images/upload/" method="post" enctype="multipart/form-data">
