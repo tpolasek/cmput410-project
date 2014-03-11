@@ -26,7 +26,7 @@
 						{% endif %}
 					</div>
 					<h4 class="list-group-item-heading"> {{ post.time_stamp }} </h4>
-					<p class="list-group-item-text">{{ post.content }}</p>
+					<p class="list-group-item-text">{{ post.content | safe }}</p>
 				</li>
 				{% endfor %}
 			</ul>

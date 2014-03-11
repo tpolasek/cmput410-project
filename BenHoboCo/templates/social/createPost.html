@@ -1,13 +1,19 @@
 {% extends 'social/base.html' %}
 {% block block_body %}
+
 <div class="row">
 	<div class="page-header">
 		<h1>Create Post</h1>
 	</div>
 </div>
 
+{% if success %}
+	<div class="alert alert-success">
+		Post created successfully!
+	</div>
+{% endif %}
 <div class="row col-md-4 col-md-offset-3">
-	<form method="POST" action="/posts/create/" role="form">
+	<form method="POST" action="/post/" role="form">
 		{% csrf_token %}
 		<!-- error messages for invalid post stuff here -->
 
@@ -22,14 +28,35 @@
 				<option value="friends_of_friends">Friends of friends</option>
 			</select>
 		</div>
+
+
 		<div class="form-group">
-			<label for="content" class="control-label">Content</label>
+			<label for="content" class="control-label">Content</label><br>
+
+		<div class="btn-group" data-toggle="buttons">
+  			<label class="btn btn-primary">
+    				<input id="text_content" type="radio" name="content_type" value="text" checked>Text
+  			</label>
+  			<label class="btn btn-primary">
+    				<input type="radio" name="content_type" value="markup" id="markup">Markup
+  			</label>
+ 			 <label class="btn btn-primary">
+    				<input type="radio" name="content_type" value="html" id="html">Html
+  			</label>
+		</div>
 			<textarea class="form-control" name="content" placeholder="Enter Content"></textarea>
 		</div>
 		<div class="form-group">
 			<input type="submit" class="btn btn-primary" value="Create Post"/>
-			<a href="/authors/{{ author.user.username }}/" class="btn btn-default">Cancel</a>
+			<a href="/authors/{{ author.user.username }}/posts" class="btn btn-default">Cancel</a>
 		</div>
 	</form>
 </div>
+
+<script>
+function selectDefault(){
+	document.getElementById("text_content").click();
+}
+</script>
+<body onload="selectDefault()">
 {% endblock %}

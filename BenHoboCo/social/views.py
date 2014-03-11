@@ -141,6 +141,15 @@ def create_post(request, author_name = None ):
     if request.method == "POST":
         access = request.POST['access']
         c = request.POST['content']
+        
+        t = request.POST['content_type']
+        if t == "markup":
+            import markdown2
+            c = markdown2.markdown(c)
+        elif t == "text":
+            c = "<pre>"+c+"</pre>"
+        else:
+            pass
 
         p = Post(author=a, accessibility=access, content=c)
         p.save()
