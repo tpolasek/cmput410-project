@@ -2,13 +2,23 @@
 {% block block_body %}
 <div class="row">
 	<div class="page-header">
-		<h1>{{ author.user.username }} <a href="" class="btn btn-success"><span class="glyphicon glyphicon-plus"></span> Add Friend</a></h1>
+		<!-- <h1>{{ author.user.username }} <a href="" class="btn btn-success"><span class="glyphicon glyphicon-plus"></span> Add Friend</a></h1> -->
+
+		<h1>
+			<form method="POST" action="/authors/{{user.username}}/friends/addfriend/" >
+				{% csrf_token %}
+				{{ author.user.username }} 
+				<input type="hidden" name="friend_name" value="{{author.user.username}}"/>
+				<input type="submit" value="Add Friend" class="btn btn-success"/>
+			</form>	
+		</h1>
 
 		{% if author.user.username == user.username %}
 			<div class="text-right">
 				<a href="/posts/create/" class="btn btn-primary">Create New Post</a>
 			</div>
 		{% endif %}
+
 	</div>
 
 
@@ -62,6 +72,11 @@
 					<h4 class="list-group-item-heading"> {{ post.time_stamp }} </h4>
 					<p class="list-group-item-text">{{ post.content }}</p>
 				</li>
+				{% for post in user_posts %}
+					<li class="list-group-item">
+						<h4 class="list-group-item-heading"> {{ post.time_stamp }} </h4>
+						<p class="list-group-item-text">post.content</p>
+					</li>
 				{% endfor %}
 			</ul>
 		</div>

@@ -94,6 +94,12 @@ def get_author_friends(request, author_name, friend_name = None):
     a = Author.objects.get(user=u)
     context_dict = {}
 
+    if request.method == "POST":
+        new_friend_name = request.POST['friend_name']
+        new_friend_location = request.POST['friend_location']
+        new_friend = Friend(name=new_friend_name, location=new_friend_location, author=a)
+        new_friend.save()
+
     if friend_name is not None:
         try:
             friend = Friend.objects.get(name=friend_name)
@@ -114,7 +120,15 @@ def add_remote_friend(request, author_name):
     context = RequestContext(request)
     u = User.objects.get(username__iexact=author_name)
     a = Author.objects.get(user = u)
-    return render_to_response('social/addRemoteFriend.html', {'author': a}, context)
+    context_dict = {'author': a}
+
+    if request.method == "POST":
+        friend_name = request.POST["friend_name"]
+        friend_location = 'http://127.0.0.1:8000' #TODO turn this into something more permanent!
+        context_dict['friend_name'] = friend_name
+        context_dict['friend_location'] = friend_location
+
+    return render_to_response('social/addRemoteFriend.html', context_dict, context)
 
 @login_required
 def create_post(request, author_name = None ):

@@ -18,6 +18,7 @@ urlpatterns = patterns('',
     url(r'^authors/$', views.get_all_authors, name="authors"),
     url(r'^authors/(?P<author_name>[-\w]+)/$',views.get_author, name="author"),
     url(r'^authors/(?P<author_name>[-\w]+)/friends/$',views.get_author_friends, name="author_friends"),
+    url(r'^authors/(?P<author_name>[-\w]+)/friends/addfriend/$', views.add_remote_friend, name="author_add_friend"),
     url(r'^authors/(?P<author_name>[-\w]+)/friends/(?P<friend_name>\w+)/$',views.get_author_friends, name="authors_specific_friend"),
 
     #This should be changed to
