@@ -25,6 +25,7 @@ class PostTestCase(TestCase):
 
     def test_delete(self):
         response = c.post('/posts/1/delete' )
+        self.assertEqual( len( Post.objects.all()), 0 )
 
 class TestCases(TestCase):
     def setUp(self):
