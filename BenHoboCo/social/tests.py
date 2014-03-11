@@ -40,10 +40,10 @@ class TestCases(TestCase):
         friend = Friend(name="friend", location="location", author = author)
         friend.save()
 
-        image = Image(url='url', accessibility='private', author=author)
+        image = Image(url='url', visibility='PRIVATE', author=author)
         image.save()
 
-        post = Post(author=author, accessibility='public', content='content', time_stamp=datetime.now())
+        post = Post(author=author, visibility='PUBLIC', content='content', time_stamp=datetime.now())
         post.save()
 
 
@@ -66,14 +66,14 @@ class TestCases(TestCase):
 
         image = Image.objects.get(author=author)
         self.assertEqual(image.url, 'url')
-        self.assertEqual(image.accessibility, 'private')
+        self.assertEqual(image.visibility, 'private')
 
     def test_post(self):
         user = User.objects.get(username="test")
         author = Author.objects.get(user=user)
 
         post = Post.objects.get(author=author)
-        self.assertEqual(post.accessibility, 'public')
+        self.assertEqual(post.visibility, 'PUBLIC')
         self.assertEqual(post.content, 'content')
 
     def test_create_delete_post(self):
@@ -82,7 +82,7 @@ class TestCases(TestCase):
         access = 'public'
 	content = 'test'
         
-	p = Post(author=author, accessibility=access, content=content)
+	p = Post(author=author, visibility=access, content=content)
         p.save()
 	new_post_id = p.id
 	self.assertNotEqual(p.id, 0)

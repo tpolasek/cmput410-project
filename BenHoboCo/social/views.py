@@ -28,16 +28,9 @@ def get_all_authors(request):
 def get_author(request, author_name = None):
     context = RequestContext( request )
 
-     #get User object then find the Author object from it
+    #get User object then find the Author object from it
     u = User.objects.get(username__iexact=author_name)
     a = Author.objects.get(user=u)
-
-    # FOR BENSON:
-    #  We gotta get the posts for this author.
-    #  Posts should be gotten based on relationship to the user.
-    #  If current user is the author, then we can show all posts.
-    #  If current user is friend, show friend posts, etc.
-    #  If no user is logged in, show all public posts.
 
     #in my profile I want to see posts that are private to me
     #posts that are from my friends that are shared as "friends of friends"
@@ -61,7 +54,7 @@ def get_author(request, author_name = None):
     #If the post is local then the user will be registered. Since we are only polling
     #users that are registered and finding the authors that way, we will only
     #have local friends atm.
-    p = Post.objects.filter( ~Q(accessibility = "private" )).filter(( Q(author = a) | Q(author__in = authors) ) )
+    p = Post.objects.filter( ~Q(visibility = "PRIVATE" )).filter(( Q(author = a) | Q(author__in = authors) ) )
 
     friend_names.append(request.user.username)
     context_dict = {'author':a, 'user_posts': p, 'our_friends': friend_names }
@@ -188,7 +181,7 @@ def create_post(request, author_name = None ):
         else:
             pass
 
-        p = Post(author=a, accessibility=access, content=c)
+        p = Post(author=a, visibility=access, content=c)
         p.save()
 
         return HttpResponseRedirect("/authors/" + u.username )
@@ -270,7 +263,7 @@ def posts(request, post_id = None):
         p = Post.objects.get(id = post_id )
         context_dict['user_posts'] = {p}
     else:
-        p = Post.objects.filter(accessibility="public")
+        p = Post.objects.filter(visibility="PUBLIC")
         context_dict['user_posts'] = p
 
     return render_to_response('social/posts.html', context_dict, context )

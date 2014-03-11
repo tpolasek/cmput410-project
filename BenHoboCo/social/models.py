@@ -1,53 +1,108 @@
 from django.db import models
 from django.contrib.auth.models import User
 from datetime import datetime
+from django_extensions.db.fields import UUIDField
 
 ACCESSIBILITY_TYPES = (
-    ('public', 'Public'),
-    ('private', 'Private'),
+    ('PUBLIC', 'Public'),
+    ('PRIVATE', 'Private'),
     ('private_to_another', 'Private To another author'),
-    ('local_friends', 'Friends on this host'),
-    ('global_friends', 'Friends'),
-    ('friends_of_friends', 'Friends of friends'),
+    ('SERVERONLY', 'Friends on this host'),
+    ('FRIENDS', 'Friends'),
+    ('FOAF', 'Friends of friends'),
 )
 
 class Author(models.Model):
+
+    #User already contains: username, password, first_name, last_name, email
     user = models.OneToOneField(User)
+
     image = models.ImageField( blank=True, upload_to="Images")
+    host = models.URLField(max_length=256) #This specifies the authors host
+
+    guid = UUIDField()
 
     def __unicode__(self):
         return self.user.username
 
-
+#This is a finalized friend object
 class Friend(models.Model):
-    name = models.CharField( max_length=32 )
-    location = models.CharField(max_length=256)
     author = models.ForeignKey(Author)
+
+    friend_name = models.CharField(max_length=256)
+    host = models.URLField(max_length=256)
+
+    friend_guid = UUIDField() #This is who is requesting friendship
+
+    url = models.URLField(max_length=256) #This is the url to the friends profile page
 
     def __unicode__(self):
         return self.name
 
+
+#This is a friend request that is pending.
+#Once the author accepts/denies this request, this will be deleted
+#and either used to create a real final friend object or removed if 
+#the request was denied
+class FriendRequest(models.Model):
+
+    #a friend request is associated with an author
+    #and an author can have many friend requests
+    author = models.ForeignKey(Author)
+
+    friend_name = models.CharField(max_length=256)
+    host = models.URLField(max_length=256)
+
+    friend_guid = UUIDField()   #This is who is requesting friendship
+    author_guid = UUIDField()   #This is who he/she is trying to be friends with
+
+    url = models.URLField(max_length=256) #This is the url to the friends profile page
+
+
+    def __unicode__(self):
+        return self.name
+
+
 class Image(models.Model):
     author = models.ForeignKey(Author, related_name="author")
     url = models.CharField(max_length=256)
-    accessibility = models.CharField( max_length=128, choices=ACCESSIBILITY_TYPES )
+    visibility = models.CharField( max_length=128, choices=ACCESSIBILITY_TYPES )
 
     def __unicode__(self):
         return self.url
 
 class Post(models.Model):
     author = models.ForeignKey(Author)
-    time_stamp = models.DateTimeField(default=datetime.now)
-    accessibility = models.CharField( max_length=128, choices=ACCESSIBILITY_TYPES )
+
+    title = models.CharField(max_length=256)
+    source = models.URLField(max_length=256)
+    origin = models.URLField(max_length=256)
+
+    description = models.CharField(max_length=256)
+    content_type = models.CharField(max_length=256)
     content = models.TextField()
+
+    #We may want a separate model for this actually
+    categories = models.TextField()
+
+    #We find comments through the comment model.
+    #No need for a comments field here
+
+    pubDate = models.DateTimeField(default=datetime.now)
+    visibility = models.CharField( max_length=128, choices=ACCESSIBILITY_TYPES )
+
+    guid = UUIDField()
 
     def __unicode__(self):
         return "%s, %i" % (self.author.user.username, self.id)
 
 class Comment(models.Model):
-    user = models.OneToOneField(Author)
-    time_stamp = models.DateTimeField(default=datetime.now)
+    author = models.OneToOneField(Author)
+    pubDate = models.DateTimeField(default=datetime.now)
     post = models.ForeignKey(Post)
+    comment = models.TextField()
+
+    guid = UUIDField()
 
     def __unicode__(self):
         return "%s posted a comment to Post %d" % ( user.username, post.id )
