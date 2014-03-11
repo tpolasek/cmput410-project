@@ -9,7 +9,7 @@
 				{% csrf_token %}
 				{{ author.user.username }} 
 				<input type="hidden" name="friend_name" value="{{author.user.username}}"/>
-				<input type="submit" class="btn btn-success"/>
+				<input type="submit" value="Add Friend" class="btn btn-success"/>
 			</form>	
 		</h1>
 	</div>
