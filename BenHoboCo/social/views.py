@@ -39,6 +39,13 @@ def get_author(request, author_name = None):
     #  If current user is friend, show friend posts, etc.
     #  If no user is logged in, show all public posts.
 
+    #in my profile I want to see posts that are private to me
+    #posts that are from my friends that are shared as "friends of friends"
+    #posts that are shared to me by local_friends
+
+    #posts that are shared to me by global_friends
+    #posts that are shared to me by friends of friends
+
     #friends of author
     friends = Friend.objects.filter( author = Author.objects.get(user=request.user) )
 
@@ -49,7 +56,12 @@ def get_author(request, author_name = None):
 
     authors = Author.objects.filter(user__in=users)
 
-    p = Post.objects.filter(Q(author = a) | Q(author = authors))
+    #If the post is private, we won't show it. 
+    #If the post is friends_of_friends we will show it
+    #If the post is local then the user will be registered. Since we are only polling
+    #users that are registered and finding the authors that way, we will only
+    #have local friends atm.
+    p = Post.objects.filter( ~Q(accessibility = "private" )).filter(( Q(author = a) | Q(author__in = authors) ) )
 
     friend_names.append(request.user.username)
     context_dict = {'author':a, 'user_posts': p, 'our_friends': friend_names }
