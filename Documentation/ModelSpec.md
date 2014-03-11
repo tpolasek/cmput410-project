@@ -31,7 +31,18 @@ Author
 * (Text) Author Name
 * (Text/URL) Author Host
 
-FriendRelationship
+FriendObject
 ----------
 * (Author Object) Author
-* (Author Object) Friend
+* (Text) Friend Name
+* (Text/URL) Friend Host
+* (GUID) Friend ID
+* (Text/URL) Friend URL (to profile page)
+
+FriendRequest
+----------
+* (Text) Friend Name
+* (Text/URL) Friend Host
+* (GUID) Friend ID
+* (Text/URL) Friend URL (to profile page)
+* (GUID) TargetAuthor ID
