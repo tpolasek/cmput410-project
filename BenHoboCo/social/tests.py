@@ -5,7 +5,7 @@ from social.models import *
 from django.contrib.auth.models import User
 
 from datetime import datetime
-
+from markdown2 import markdown
 class PostTestCase(TestCase):
     def setUp(self):
        global c
@@ -72,3 +72,8 @@ class TestCases(TestCase):
         post = Post.objects.get(author=author)
         self.assertEqual(post.accessibility, 'public')
         self.assertEqual(post.content, 'content')
+
+    def test_markdown(self):
+        self.assertEqual(markdown("*test*"),"<p><em>test</em></p>\n")
+        self.assertEqual(markdown("**test**"),"<p><strong>test</strong></p>\n")
+        self.assertEqual(markdown("[test](lol.com)"),"<p><a href=\"lol.com\">test</a></p>\n")
