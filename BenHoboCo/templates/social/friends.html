@@ -3,6 +3,7 @@
 <div class="row">
     <div class="page-header">
         <h2>Friends of {{author.user.username}}</h2>
+        <a href="addfriend">Add a friend</a> <!-- TODO make it pretty -->
     </div>
     {% if user_friends %}
     {% for friend in user_friends %}
@@ -10,33 +11,33 @@
         <div class="thumbnail">
           <div class="caption">
             <div class="text-right">
-                <a href="" class="btn btn-danger btn-xs"><span class="glyphicon glyphicon-remove"></span> Unfriend</a>
+                <!-- <a href="" class="btn btn-danger btn-xs"><span class="glyphicon glyphicon-remove"></span> Unfriend</a> TODO add the little x back in -->
+                <form method="POST" action="{{friend.name}}/delete/">
+                    {% csrf_token %}
+                    <input type="hidden" name="friend_location" value="{{friend.location}}"/>
+                    <input type="submit" class="btn btn-danger btn-xs" value="Unfriend"/>
+                </form>
             </div>
-            <a href="{{friend.location | urlencode}}"><h3>{{friend.name}}</h3></a>
+            <a href="{{friend.location}}/authors/{{friend.name}}"><h3>{{friend.name}}</h3></a>
         </div>
     </div>
     {% endfor %}
 
     {% endif %}
-    <!-- This is just a placeholder for reference.-->
-    <div class="col-sm-4 col-md-3">
-        <div class="thumbnail">
-          <div class="caption">
-            <div class="text-right">
-                <a href="" class="btn btn-danger btn-xs"><span class="glyphicon glyphicon-remove"></span> Unfriend</a>
-            </div>
-            <a href="/authors/bensontrinh"><h3>bensontrinh</h3></a>
-        </div>
-    </div>
 
     {% if friend %}
     <div class="col-sm-4 col-md-3">
         <div class="thumbnail">
           <div class="caption">
             <div class="text-right">
-                <a href="" class="btn btn-danger btn-xs"><span class="glyphicon glyphicon-remove"></span> Unfriend</a>
+                <!-- <a href="" class="btn btn-danger btn-xs"><span class="glyphicon glyphicon-remove"></span> Unfriend</a> TODO add the little x back in -->
+                <form method="DELETE" action="{{friend.name}}/">
+                    {% csrf_token %}
+                    <input type="hidden" name="friend_location" value="{{friend.location}}"/>
+                    <input type="submit" class="btn btn-danger btn-xs" value="Unfriend"/>
+                </form>
             </div>
-            <a href="{{friend.location | urlencode}}"><h3>{{friend.name}}</h3></a>
+            <a href="{{friend.location}}/authors/{{friend.name}}"><h3>{{friend.name}}</h3></a>
         </div>
     </div>
     {% endif %}

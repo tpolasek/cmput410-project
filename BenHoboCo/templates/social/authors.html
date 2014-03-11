@@ -23,7 +23,7 @@
               <!-- <img data-src="holder.js/300x200" alt="..."> -->
               <div class="caption">
                 {% if a.image %}
-                    <img src="{{ a.image.url | urlencode }}"/>
+                    <img style="width: 75%; height: auto" src="{{ a.image.url | urlencode }}"/>
                 {% endif %}
                 <h3>{{ a.user.username }}</h3>
 

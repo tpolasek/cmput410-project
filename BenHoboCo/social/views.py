@@ -4,7 +4,8 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render_to_response, redirect
 from django.template import RequestContext
 from django.core.exceptions import ObjectDoesNotExist
-from social.forms import UserForm, AuthorForm
+from social.forms import UserForm, AuthorForm, ImageUploadForm
+from django.db.models import Q
 
 from social.models import Post, Author, Image, Friend
 from django.contrib.auth.models import User
@@ -38,14 +39,42 @@ def get_author(request, author_name = None):
     #  If current user is friend, show friend posts, etc.
     #  If no user is logged in, show all public posts.
 
-    #Display the posts on the profile page
-    return render_to_response('social/profile.html', {'author': a, 'user': u}, context )
+    #in my profile I want to see posts that are private to me
+    #posts that are from my friends that are shared as "friends of friends"
+    #posts that are shared to me by local_friends
+
+    #posts that are shared to me by global_friends
+    #posts that are shared to me by friends of friends
+
+    #friends of author
+    friends = Friend.objects.filter( author = Author.objects.get(user=request.user) )
+
+    #Get the posts where the author is the user signed in
+    # and also where the author is in the list of friends
+    friend_names = [ friend.name for friend in friends ]
+    users = User.objects.filter(username__in=friend_names)
+
+    authors = Author.objects.filter(user__in=users)
+
+    #If the post is private, we won't show it. 
+    #If the post is friends_of_friends we will show it
+    #If the post is local then the user will be registered. Since we are only polling
+    #users that are registered and finding the authors that way, we will only
+    #have local friends atm.
+    p = Post.objects.filter( ~Q(accessibility = "private" )).filter(( Q(author = a) | Q(author__in = authors) ) )
+
+    friend_names.append(request.user.username)
+    context_dict = {'author':a, 'user_posts': p, 'our_friends': friend_names }
+
+    # DO NOT PASS THE USER IN IT WILL OVERWRITE THE CURRENTLY SIGNED IN USER
+
+    return render_to_response('social/profile.html', context_dict, context )
 
 def get_author_images(request, author_name, image_id = None ):
     context = RequestContext( request )
     
     #get User object then find the Author object from it
-    u = User.objects.get(username__icontains=author_name)
+    u = User.objects.get(username__iexact=author_name)
     a = Author.objects.get(user=u)
     context_dict = {}
     
@@ -62,7 +91,7 @@ def get_author_images(request, author_name, image_id = None ):
     #no content
     return render_to_response('social/images.html', context_dict, context )
 
-def get_author_posts(request, author_name, post_id = None ):
+def get_author_posts(request, author_name ):
     context = RequestContext( request )
 
     #get User object then find the Author object from it
@@ -71,20 +100,27 @@ def get_author_posts(request, author_name, post_id = None ):
     context_dict = {}
     context_dict['author'] = a
 
-    if post_id is not None:
-        try:
-            post = Post.objects.get(id=post_id)
-            context_dict['post']= post
-        except ObjectDoesNotExist:
-            pass #do nothing for now
-
-        return render_to_response('social/post.html', context_dict, context )
-
     posts = Post.objects.filter(author=a)
     context_dict['user_posts'] = posts
 
-    #no content
     return render_to_response('social/posts.html', context_dict, context )
+
+def delete_friend(request, author_name, friend_name):
+    context = RequestContext( request )
+
+    #get User object then find the Author object from it
+    if request.method == "POST":
+        u = User.objects.get(username__iexact=author_name)
+        a = Author.objects.get(user=u)
+
+        friend_location = request.POST["friend_location"]
+
+        # Is it us trying to delete our own friend?
+        if u.username == request.user.username:
+            friend = Friend.objects.get(name=friend_name, author=a, location=friend_location)
+            friend.delete()
+
+    return HttpResponseRedirect("/authors/%s/friends/" % author_name) 
 
 def get_author_friends(request, author_name, friend_name = None):
     context = RequestContext( request )
@@ -92,6 +128,14 @@ def get_author_friends(request, author_name, friend_name = None):
     u = User.objects.get(username__iexact=author_name)
     a = Author.objects.get(user=u)
     context_dict = {}
+
+    if request.method == "POST":
+        new_friend_name = request.POST['friend_name']
+        new_friend_location = request.POST['friend_location']
+
+        if not Friend.objects.filter(author=a, name=new_friend_name, location=new_friend_location):
+            new_friend = Friend(name=new_friend_name, location=new_friend_location, author=a)
+            new_friend.save()
 
     if friend_name is not None:
         try:
@@ -113,7 +157,15 @@ def add_remote_friend(request, author_name):
     context = RequestContext(request)
     u = User.objects.get(username__iexact=author_name)
     a = Author.objects.get(user = u)
-    return render_to_response('social/addRemoteFriend.html', {'author': a}, context)
+    context_dict = {'author': a}
+
+    if request.method == "POST":
+        friend_name = request.POST["friend_name"]
+        friend_location = 'http://127.0.0.1:8000' #TODO turn this into something more permanent!
+        context_dict['friend_name'] = friend_name
+        context_dict['friend_location'] = friend_location
+
+    return render_to_response('social/addRemoteFriend.html', context_dict, context)
 
 @login_required
 def create_post(request, author_name = None ):
@@ -126,11 +178,20 @@ def create_post(request, author_name = None ):
     if request.method == "POST":
         access = request.POST['access']
         c = request.POST['content']
+        
+        t = request.POST['content_type']
+        if t == "markup":
+            import markdown2
+            c = markdown2.markdown(c)
+        elif t == "text":
+            c = "<pre>"+c+"</pre>"
+        else:
+            pass
 
         p = Post(author=a, accessibility=access, content=c)
         p.save()
 
-        context_dict['success'] = True
+        return HttpResponseRedirect("/authors/" + u.username )
 
     return render_to_response('social/createPost.html', context_dict, context)
 
@@ -198,3 +259,54 @@ def user_logout(request):
     logout(request)
 
     return HttpResponseRedirect("/")
+
+@login_required
+def posts(request, post_id = None):
+
+    context = RequestContext( request )
+    context_dict = {}
+
+    if post_id is not None:
+        p = Post.objects.get(id = post_id )
+        context_dict['user_posts'] = {p}
+    else:
+        p = Post.objects.filter(accessibility="public")
+        context_dict['user_posts'] = p
+
+    return render_to_response('social/posts.html', context_dict, context )
+
+@login_required
+def delete_post(request, post_id ):
+    #Deleting a post
+    if request.method == "POST":
+
+        # in the template, I have ensured that the user can only
+        # see the delete button if they are signed in as that user
+        # and viewing a post that they posted
+        try:
+            post = Post.objects.get(id=post_id)
+            post.delete()
+        except ObjectDoesNotExist:
+            pass
+
+        u = request.user
+        a = Author.objects.get(user = u)
+
+        posts = Post.objects.filter(author=a)
+
+
+    return HttpResponseRedirect("/authors/" + u.username )
+
+def upload_image(request, author_name ):
+    print "Got here"
+    if request.method == "POST":
+        
+        form = ImageUploadForm(request.POST, request.FILES)
+        if form.is_valid():
+            print "Form is valid"
+            author = Author.objects.get(user=request.user)
+            author.image = form.cleaned_data['image']
+            author.save()
+
+    return HttpResponseRedirect("/authors/"+ request.user.username )
+
