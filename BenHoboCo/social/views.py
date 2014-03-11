@@ -32,13 +32,6 @@ def get_author(request, author_name = None):
     u = User.objects.get(username__iexact=author_name)
     a = Author.objects.get(user=u)
 
-    us = Author.objects.get(user=request.user)
-    our_friends_o = Friend.objects.filter(author=us)
-    our_friends = []
-
-    for friend in our_friends_o:
-        our_friends.append(friend.name)
-
     # FOR BENSON:
     #  We gotta get the posts for this author.
     #  Posts should be gotten based on relationship to the user.
@@ -47,7 +40,7 @@ def get_author(request, author_name = None):
     #  If no user is logged in, show all public posts.
 
     #friends of author
-    friends = Friend.objects.filter( author = a )
+    friends = Friend.objects.filter( author = Author.objects.get(user=request.user) )
 
     #Get the posts where the author is the user signed in
     # and also where the author is in the list of friends
@@ -58,7 +51,8 @@ def get_author(request, author_name = None):
 
     p = Post.objects.filter(Q(author = a) | Q(author = authors))
 
-    context_dict = {'author':a, 'user_posts': p }
+    friend_names.append(request.user.username)
+    context_dict = {'author':a, 'user_posts': p, 'our_friends': friend_names }
 
     # DO NOT PASS THE USER IN IT WILL OVERWRITE THE CURRENTLY SIGNED IN USER
 
