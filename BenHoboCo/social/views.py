@@ -51,7 +51,12 @@ def get_author(request, author_name = None):
 
     #Get the posts where the author is the user signed in
     # and also where the author is in the list of friends
-    p = Post.objects.filter(Q(author = a) | Q(author__in = friends))
+    friend_names = [ friend.name for friend in friends ]
+    users = User.objects.filter(username__in=friend_names)
+
+    authors = Author.objects.filter(user__in=users)
+
+    p = Post.objects.filter(Q(author = a) | Q(author = authors))
 
     context_dict = {'author':a, 'user_posts': p }
 
@@ -63,7 +68,7 @@ def get_author_images(request, author_name, image_id = None ):
     context = RequestContext( request )
     
     #get User object then find the Author object from it
-    u = User.objects.get(username__icontains=author_name)
+    u = User.objects.get(username__iexact=author_name)
     a = Author.objects.get(user=u)
     context_dict = {}
     

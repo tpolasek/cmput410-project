@@ -80,7 +80,7 @@
 							</form>
 						{% endif %}
 					</div>
-					<h4 class="list-group-item-heading"> {{ post.time_stamp }} </h4>
+					<h4 class="list-group-item-heading"> {{ post.author.user.username }} : {{ post.time_stamp }} </h4>
 					<p class="list-group-item-text">{{ post.content | safe }}</p>
 				</li>
 				{% endfor %}
