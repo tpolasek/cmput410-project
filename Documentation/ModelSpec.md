@@ -31,7 +31,7 @@ Author
 * (Text) Author Name
 * (Text/URL) Author Host
 
-Friend
+FriendRelationship
 ----------
 * (Author Object) Author
 * (Author Object) Friend
