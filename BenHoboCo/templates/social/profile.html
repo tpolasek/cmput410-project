@@ -44,7 +44,7 @@
 					<li class="list-group-item">
 						{% if author.image %}
 							<img src="{{ author.image.url | urlencode }}"/> 
-						{% else %}
+						{% elif user.username == author.user.username %}
 							<p class="text-warning"> You have no picture!  Why not add one today? </p>
 							<form action="/authors/{{ user.username }}/images/upload/" method="post" enctype="multipart/form-data">
 								{% csrf_token %}
@@ -53,6 +53,8 @@
 								</p>
 								<input type="submit" class="btn btn-default" value="Upload">
 							</form>
+						{% else %}
+							<p class="text-warning"> This user has no picture! </p>
 						{% endif %}
 					</li>
 				</ul>
