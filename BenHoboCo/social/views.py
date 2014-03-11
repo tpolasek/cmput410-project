@@ -4,7 +4,7 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render_to_response, redirect
 from django.template import RequestContext
 from django.core.exceptions import ObjectDoesNotExist
-from social.forms import UserForm, AuthorForm
+from social.forms import UserForm, AuthorForm, ImageUploadForm
 from django.db.models import Q
 
 from social.models import Post, Author, Image, Friend
@@ -250,3 +250,17 @@ def delete_post(request, post_id ):
 
 
     return HttpResponseRedirect("/authors/" + u.username )
+
+def upload_image(request, author_name ):
+    print "Got here"
+    if request.method == "POST":
+        
+        form = ImageUploadForm(request.POST, request.FILES)
+        if form.is_valid():
+            print "Form is valid"
+            author = Author.objects.get(user=request.user)
+            author.image = form.cleaned_data['image']
+            author.save()
+
+    return HttpResponseRedirect("/authors/"+ request.user.username )
+

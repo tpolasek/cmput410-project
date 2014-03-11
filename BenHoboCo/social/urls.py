@@ -25,8 +25,7 @@ urlpatterns = patterns('',
     #images/author/author_name
     #images/author/author_name/image_id or #images/image_id
     url(r'^authors/(?P<author_name>[-\w]+)/images/$',views.get_author_images, name="author_images"),
-    url(r'^authors/(?P<author_name>[-\w]+)/images/(?P<image_id>\w+)/$',views.get_author_images, name="authors_specific_image"),    
-
+    url(r'^authors/(?P<author_name>[-\w]+)/images/(?P<image_id>\d+)/$',views.get_author_images, name="authors_specific_image"),    
 
     #posts - all posts
     #posts/post_id - specific post
@@ -37,6 +36,8 @@ urlpatterns = patterns('',
     url(r'^posts/(?P<post_id>\d+)/delete/$', views.delete_post, name="posts"),
 
     url(r'^posts/author/(?P<author_name>[-\w]+)/$', views.get_author_posts, name="author_posts"),
+
+    url(r'^authors/(?P<author_name>[-\w]+)/images/upload/$', views.upload_image, name="upload_image"),
 
     #REMOVE THE FOLLOWING LATER
     url(r'^authors/(?P<author_name>[-\w]+)/posts/$',views.get_author_posts, name="author_posts"),
