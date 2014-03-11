@@ -3,7 +3,28 @@
 <div class="row">
 	<div class="page-header">
 		<h1>{{ author.user.username }} <a href="" class="btn btn-success"><span class="glyphicon glyphicon-plus"></span> Add Friend</a></h1>
+
+		{% if author.user.username == user.username %}
+			<div class="text-right">
+				<a href="/posts/create/" class="btn btn-primary">Create New Post</a>
+			</div>
+		{% endif %}
 	</div>
+
+
+	{% if success %}
+		<div class="alert alert-success">
+			Post created successfully!
+		</div>
+	{% endif %}
+
+	{% if error %}
+		<div class="alert alert-error">
+			{{ error }}
+		</div>
+	{% endif %}
+
+
 	<div class="col-md-4">
 		<div class="panel panel-default">
 			<div class="panel-heading">
@@ -20,21 +41,27 @@
 				</ul>
 		</div>
 	</div>
+
 	<div class="col-md-8">
 		<div class="panel panel-primary">
 			<div class="panel-heading">
 				<h2 class="panel-title">Posts</h2>
 			</div>
+
 			<ul class="list-group">
-				<li class="list-group-item">
-					<h4 class="list-group-item-heading"> December 25, 2013, 18:24:35 </h4>
-					<p class="list-group-item-text">This is a test example of a post</p>	
-				</li>
 				{% for post in user_posts %}
-					<li class="list-group-item">
-						<h4 class="list-group-item-heading"> {{ post.time_stamp }} </h4>
-						<p class="list-group-item-text">post.content</p>
-					</li>
+				<li class="list-group-item">
+					<div class="text-right">
+						{% if author.user.username == user.username %}
+							<form action="/posts/{{ post.id }}/delete/" method="post">
+								{% csrf_token %}
+								<a href="javascript:;" onclick="parentNode.submit();"><span class="glyphicon glyphicon-remove"></span></a>
+							</form>
+						{% endif %}
+					</div>
+					<h4 class="list-group-item-heading"> {{ post.time_stamp }} </h4>
+					<p class="list-group-item-text">{{ post.content }}</p>
+				</li>
 				{% endfor %}
 			</ul>
 		</div>
