@@ -31,6 +31,13 @@ def get_author(request, author_name = None):
     u = User.objects.get(username__iexact=author_name)
     a = Author.objects.get(user=u)
 
+    us = Author.objects.get(user=request.user)
+    our_friends_o = Friend.objects.filter(author=us)
+    our_friends = []
+
+    for friend in our_friends_o:
+        our_friends.append(friend.name)
+
     # FOR BENSON:
     #  We gotta get the posts for this author.
     #  Posts should be gotten based on relationship to the user.
@@ -39,7 +46,7 @@ def get_author(request, author_name = None):
     #  If no user is logged in, show all public posts.
 
     #Display the posts on the profile page
-    return render_to_response('social/profile.html', {'author': a}, context )
+    return render_to_response('social/profile.html', {'author': a, 'our_friends': our_friends}, context )
 
 def get_author_images(request, author_name, image_id = None ):
     context = RequestContext( request )
@@ -86,6 +93,23 @@ def get_author_posts(request, author_name, post_id = None ):
     #no content
     return render_to_response('social/posts.html', context_dict, context )
 
+def delete_friend(request, author_name, friend_name):
+    context = RequestContext( request )
+
+    #get User object then find the Author object from it
+    if request.method == "POST":
+        u = User.objects.get(username__iexact=author_name)
+        a = Author.objects.get(user=u)
+
+        friend_location = request.POST["friend_location"]
+
+        # Is it us trying to delete our own friend?
+        if u.username == request.user.username:
+            friend = Friend.objects.get(name=friend_name, author=a, location=friend_location)
+            friend.delete()
+
+    return HttpResponseRedirect("/authors/%s/friends/" % author_name) 
+
 def get_author_friends(request, author_name, friend_name = None):
     context = RequestContext( request )
 
@@ -96,8 +120,10 @@ def get_author_friends(request, author_name, friend_name = None):
     if request.method == "POST":
         new_friend_name = request.POST['friend_name']
         new_friend_location = request.POST['friend_location']
-        new_friend = Friend(name=new_friend_name, location=new_friend_location, author=a)
-        new_friend.save()
+
+        if not Friend.objects.filter(author=a, name=new_friend_name, location=new_friend_location):
+            new_friend = Friend(name=new_friend_name, location=new_friend_location, author=a)
+            new_friend.save()
 
     if friend_name is not None:
         try:
