@@ -28,6 +28,8 @@ class PostTestCase(TestCase):
         self.assertEqual( len( Post.objects.all()), 0 )
 
 class TestCases(TestCase):
+
+
     def setUp(self):
 
         user = User(username="test")
@@ -73,6 +75,21 @@ class TestCases(TestCase):
         post = Post.objects.get(author=author)
         self.assertEqual(post.accessibility, 'public')
         self.assertEqual(post.content, 'content')
+
+    def test_create_delete_post(self):
+        user = User.objects.get(username="test")
+        author = Author.objects.get(user=user)
+        access = 'public'
+	content = 'test'
+        
+	p = Post(author=author, accessibility=access, content=content)
+        p.save()
+	new_post_id = p.id
+	self.assertNotEqual(p.id, 0)
+	
+	post = Post.objects.get(id=new_post_id)
+        self.assertEqual(post.content,"test")
+	post.delete()
 
     def test_markdown(self):
         self.assertEqual(markdown("*test*"),"<p><em>test</em></p>\n")
