@@ -6,17 +6,17 @@
 	</div>
 </div>
 <div class="row col-md-4 col-md-offset-3">
-	<form method="POST" action="/authors/{{ author.user.username }}/friends" role="form">
+	<form method="POST" action="/authors/{{ user.username }}/friends/" role="form">
 		{% csrf_token %}
 		<!-- error messages for invalid post stuff here -->
 
 		<div class="form-group">
 			<label for="friendName" class="control-label">Friend Name</label>
-			<input type="text" name="friendName" class="form-control" />
+			<input type="text" name="friend_name" value="{{friend_name}}" class="form-control" />
 		</div>
 		<div class="form-group">
 			<label for="content" class="control-label">Location</label>
-			<input type="text" name="friendLocation" class="form-control" /> 
+			<input type="text" name="friend_location" value="{{friend_location}}" class="form-control" /> 
 		</div>
 		<div class="form-group">
 			<input type="submit" class="btn btn-primary" value="Add Remote Friend"/>

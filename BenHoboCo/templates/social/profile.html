@@ -2,7 +2,16 @@
 {% block block_body %}
 <div class="row">
 	<div class="page-header">
-		<h1>{{ author.user.username }} <a href="" class="btn btn-success"><span class="glyphicon glyphicon-plus"></span> Add Friend</a></h1>
+		<!-- <h1>{{ author.user.username }} <a href="" class="btn btn-success"><span class="glyphicon glyphicon-plus"></span> Add Friend</a></h1> -->
+
+		<h1>
+			<form method="POST" action="/authors/{{user.username}}/friends/addfriend/" >
+				{% csrf_token %}
+				{{ author.user.username }} 
+				<input type="hidden" name="friend_name" value="{{author.user.username}}"/>
+				<input type="submit" class="btn btn-success"/>
+			</form>	
+		</h1>
 	</div>
 	<div class="col-md-4">
 		<div class="panel panel-default">
