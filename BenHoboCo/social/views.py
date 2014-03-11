@@ -268,7 +268,7 @@ def posts(request, post_id = None):
 
     if post_id is not None:
         p = Post.objects.get(id = post_id )
-        context_dict['user_posts'] = p
+        context_dict['user_posts'] = {p}
     else:
         p = Post.objects.filter(accessibility="public")
         context_dict['user_posts'] = p
