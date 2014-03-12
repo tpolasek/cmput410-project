@@ -7,7 +7,7 @@
 		<h1>
 			<form method="POST" action="/authors/{{user.username}}/friends/addfriend/" >
 				{% csrf_token %}
-				{{ author.user.first_name }} {{ author.user.last_name }}
+				{{ author.get_full_name }}
 				{% if not author.user.username in our_friends %}
 					<input type="hidden" name="friend_name" value="{{author.user.username}}"/>
 					<input type="submit" value="Add Friend" class="btn btn-success"/>

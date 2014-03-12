@@ -33,6 +33,9 @@ class Author(models.Model):
             displayname = self.user.first_name,
         )
 
+    def get_full_name(self):
+        return "%s %s" % ( self.user.first_name, self.user.last_name )
+
 #This is a finalized friend object
 class Friend(models.Model):
     author = models.ForeignKey(Author)
