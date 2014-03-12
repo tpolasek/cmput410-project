@@ -30,7 +30,7 @@ def get_authors(request, author_guid=None):
         pass
 
     data = [ author.json() for author in a ]
-    return HttpResponse( json.dumps(data), content_type="application/json")
+    return HttpResponse( json.dumps(data,indent=4), content_type="application/json")
 
 def get_posts(request, author_guid = None, post_guid = None ):
 
@@ -51,7 +51,7 @@ def get_posts(request, author_guid = None, post_guid = None ):
                 comments = Comment.objects.filter(post=post)
                 d['comments'] = [ c.json() for c in comments ]
 
-            return HttpResponse( json.dumps(data), content_type="application/json")
+            return HttpResponse( json.dumps(data,indent=4), content_type="application/json")
         except ObjectDoesNotExist:
             print "Cannot find user"
             pass
@@ -88,5 +88,5 @@ def compare_friends(self, friend1_guid, friend2_guid):
             if f.friend_guid == friend2_guid or f.friend_guid == friend1_guid:
                 response['friend'] = "YES"
 
-    return HttpResponse( json.dumps(response), content_type="application/json")
+    return HttpResponse( json.dumps(response, indent=4), content_type="application/json")
 
