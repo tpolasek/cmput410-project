@@ -1,5 +1,5 @@
 from django.conf.urls import patterns, url
-from social import views
+from social import views, api_views
 
 urlpatterns = patterns('',
     url(r'^$', views.index, name="index"),
@@ -43,4 +43,8 @@ urlpatterns = patterns('',
     #REMOVE THE FOLLOWING LATER
     url(r'^authors/(?P<author_name>[-\w]+)/posts/$',views.get_author_posts, name="author_posts"),
     url(r'^authors/(?P<author_name>[-\w]+)/posts/(?P<post_id>\w+)/$',views.get_author_posts, name="authors_specific_post"),
+
+    #API
+    url(r'^api/authors/$', api_views.get_authors, name="get_authors"),
+
 )

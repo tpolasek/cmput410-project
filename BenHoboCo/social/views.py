@@ -298,7 +298,9 @@ def upload_image(request, author_name ):
         if form.is_valid():
             print "Form is valid"
             author = Author.objects.get(user=request.user)
-            author.image = form.cleaned_data['image']
+            im = form.cleaned_data['image']
+
+            author.image = im
             author.save()
 
     return HttpResponseRedirect("/authors/"+ request.user.username )

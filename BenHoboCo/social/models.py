@@ -25,6 +25,13 @@ class Author(models.Model):
     def __unicode__(self):
         return self.user.username
 
+    def json(self):
+        return dict (
+            id = self.guid,
+            host = self.host,
+            displayname = self.user.first_name,
+        )
+
 #This is a finalized friend object
 class Friend(models.Model):
     author = models.ForeignKey(Author)
