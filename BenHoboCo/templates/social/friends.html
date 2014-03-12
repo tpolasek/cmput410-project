@@ -12,13 +12,13 @@
           <div class="caption">
             <div class="text-right">
                 <!-- <a href="" class="btn btn-danger btn-xs"><span class="glyphicon glyphicon-remove"></span> Unfriend</a> TODO add the little x back in -->
-                <form method="POST" action="{{friend.name}}/delete/">
+                <form method="POST" action="{{friend.friend_name}}/delete/">
                     {% csrf_token %}
-                    <input type="hidden" name="friend_location" value="{{friend.location}}"/>
+                    <input type="hidden" name="friend_location" value="{{friend.host}}"/>
                     <input type="submit" class="btn btn-danger btn-xs" value="Unfriend"/>
                 </form>
             </div>
-            <a href="{{friend.location}}/authors/{{friend.name}}"><h3>{{friend.name}}</h3></a>
+            <a href="{{friend.host}}/authors/{{friend.friend_name}}"><h3>{{friend.friend_name}}</h3></a>
         </div>
     </div>
     {% endfor %}

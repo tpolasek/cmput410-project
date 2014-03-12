@@ -44,7 +44,7 @@ def get_author(request, author_name = None):
 
     #Get the posts where the author is the user signed in
     # and also where the author is in the list of friends
-    friend_names = [ friend.name for friend in friends ]
+    friend_names = [ friend.friend_name for friend in friends ]
     users = User.objects.filter(username__in=friend_names)
 
     authors = Author.objects.filter(user__in=users)
@@ -110,7 +110,7 @@ def delete_friend(request, author_name, friend_name):
 
         # Is it us trying to delete our own friend?
         if u.username == request.user.username:
-            friend = Friend.objects.get(name=friend_name, author=a, location=friend_location)
+            friend = Friend.objects.get(friend_name=friend_name, author=a, host=friend_location)
             friend.delete()
 
     return HttpResponseRedirect("/authors/%s/friends/" % author_name) 
@@ -126,13 +126,13 @@ def get_author_friends(request, author_name, friend_name = None):
         new_friend_name = request.POST['friend_name']
         new_friend_location = request.POST['friend_location']
 
-        if not Friend.objects.filter(author=a, name=new_friend_name, location=new_friend_location):
-            new_friend = Friend(name=new_friend_name, location=new_friend_location, author=a)
+        if not Friend.objects.filter(author=a, friend_name=new_friend_name, host=new_friend_location):
+            new_friend = Friend(friend_name=new_friend_name, host=new_friend_location, author=a)
             new_friend.save()
 
     if friend_name is not None:
         try:
-            friend = Friend.objects.get(name=friend_name)
+            friend = Friend.objects.get(friend_name=friend_name)
             context_dict['friend'] = friend
         except ObjectDoesNotExist:
             pass # Do nothing for now

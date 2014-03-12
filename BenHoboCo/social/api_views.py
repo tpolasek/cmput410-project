@@ -55,3 +55,38 @@ def get_posts(request, author_guid = None, post_guid = None ):
         except ObjectDoesNotExist:
             print "Cannot find user"
             pass
+
+def compare_friends(self, friend1_guid, friend2_guid):
+    try:
+        #check if friend1 is on our server
+        local = Author.objects.get(guid=friend1_guid)
+        print "Found friend1"
+    except ObjectDoesNotExist:
+        #Failed to find friend1 on our server
+        print "Failed to find friend1_guid on our server"
+        pass
+
+    try:
+        #check if friend2 is on our server
+        local = Author.objects.get(guid=friend2_guid)
+    except ObjectDoesNotExist:
+        print "Failed to find friend1_guid on our server"
+        pass
+
+    response = dict(
+        query="friends",
+        friends = [friend1_guid, friend2_guid],
+        friend="NO",
+    )
+
+    if local is not None:
+        local_friends = Friend.objects.filter(author=local)
+        print "length: %d" % len(local_friends)
+
+        for f in local_friends:
+            print f.friend_guid
+            if f.friend_guid == friend2_guid or f.friend_guid == friend1_guid:
+                response['friend'] = "YES"
+
+    return HttpResponse( json.dumps(response), content_type="application/json")
+

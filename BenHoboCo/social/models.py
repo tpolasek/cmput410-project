@@ -40,12 +40,12 @@ class Friend(models.Model):
     friend_name = models.CharField(max_length=256)
     host = models.URLField(max_length=256)
 
-    friend_guid = UUIDField() #This is who is requesting friendship
+    friend_guid = models.CharField(max_length=256) #This is who is requesting friendship
 
     url = models.URLField(max_length=256) #This is the url to the friends profile page
 
     def __unicode__(self):
-        return self.name
+        return self.friend_name
 
 
 #This is a friend request that is pending.

@@ -9,7 +9,6 @@ urlpatterns = patterns('',
     url(r'^login/$', views.user_login),
     url(r'^logout/$', views.user_logout),
 
-
     #authors - All Authors
     #authors/author_name/ - Specific Author
 
@@ -50,4 +49,9 @@ urlpatterns = patterns('',
     url(r'^api/authors/(?P<author_guid>[-\w]+)/posts/$', api_views.get_posts, name="api_get_posts"),
     url(r'^api/authors/(?P<author_guid>[-\w]+)/posts/(?P<post_guid>[-\w]+)/$', api_views.get_posts, name="api_get_posts"),
 
+    #POST a list of friends and returns a list of friends who the <author_guid> is friends with
+    #url(r'^api/friends/(?P<author_guid>[-\w]+)/$', api_views.get_friends, name="friends"),
+
+    #Compares the two provided friends and checks if they are friends
+    url(r'^api/friends/(?P<friend1_guid>[-\w]+)/(?P<friend2_guid>[-\w]+)/$', api_views.compare_friends, name="compare_friends"),
 )
