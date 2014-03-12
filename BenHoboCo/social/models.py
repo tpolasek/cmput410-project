@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from datetime import datetime
 from django_extensions.db.fields import UUIDField
+from time import strftime
 
 ACCESSIBILITY_TYPES = (
     ('PUBLIC', 'Public'),
@@ -103,6 +104,21 @@ class Post(models.Model):
     def __unicode__(self):
         return "%s, %i" % (self.author.user.username, self.id)
 
+    def json(self):
+        return dict(
+            title=self.title,
+            source = self.source,
+            origin = self.origin,
+            description = self.description,
+            content_type = self.content_type,
+            content=self.content,
+            author = self.author.json(),
+            categories = [],
+            pubDate=self.pubDate.strftime("%a %B %d %c"),
+            guid=self.guid,
+            visibility=self.visibility,
+        )
+
 class Comment(models.Model):
     author = models.OneToOneField(Author)
     pubDate = models.DateTimeField(default=datetime.now)
@@ -112,4 +128,12 @@ class Comment(models.Model):
     guid = UUIDField()
 
     def __unicode__(self):
-        return "%s posted a comment to Post %d" % ( user.username, post.id )
+        return "%s posted a comment to Post %d" % ( self.author.user.username, self.post.id )
+
+    def json(self):
+        return dict(
+            author = self.author.json(),
+            comment = self.comment,
+            pubDate = self.pubDate.strftime("%a %B %d %c"),
+            guid = self.guid,
+        )

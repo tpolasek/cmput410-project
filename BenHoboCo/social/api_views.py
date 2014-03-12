@@ -7,7 +7,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from social.forms import UserForm, AuthorForm, ImageUploadForm
 from django.db.models import Q
 
-from social.models import Post, Author, Image, Friend
+from social.models import Post, Author, Image, Friend, Comment
 from django.contrib.auth.models import User
 from django.core import serializers
 from django.forms.models import model_to_dict
@@ -26,3 +26,22 @@ def get_authors(request):
 
     data = [ author.json() for author in a ]
     return HttpResponse( json.dumps(data), content_type="application/json")
+
+def get_posts(request, author_guid = None ):
+
+    if author_guid is not None:
+        try:
+            author = Author.objects.get(guid=author_guid)
+            posts = Post.objects.filter(author=author)
+            data = [ post.json() for post in posts ]
+
+            for d in data:
+                post_guid = d['guid']
+                post = Post.objects.get(guid=post_guid)
+                comments = Comment.objects.filter(post=post)
+                d['comments'] = [ c.json() for c in comments ]
+
+            return HttpResponse( json.dumps(data), content_type="application/json")
+        except ObjectDoesNotExist:
+            print "Cannot find user"
+            pass
