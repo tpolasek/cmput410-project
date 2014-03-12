@@ -2,7 +2,7 @@
 {% block block_body %}
 <div class="row">
     <div class="page-header">
-        <h2>Friends of {{author.user.username}}</h2>
+        <h2>Friends of {{ author.user.first_name }} {{ author.user.last_name }}</h2>
         <a href="addfriend">Add a friend</a> <!-- TODO make it pretty -->
     </div>
     {% if user_friends %}
