@@ -1,0 +1,2 @@
+1.  Update Views.py with the new model
+2.  Fix friends css crap
