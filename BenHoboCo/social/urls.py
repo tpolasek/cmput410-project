@@ -46,6 +46,8 @@ urlpatterns = patterns('',
 
     #API
     url(r'^api/authors/$', api_views.get_authors, name="get_authors"),
+    url(r'^api/authors/(?P<author_guid>[-\w]+)/$', api_views.get_authors, name="get_authors"),
     url(r'^api/authors/(?P<author_guid>[-\w]+)/posts/$', api_views.get_posts, name="api_get_posts"),
+    url(r'^api/authors/(?P<author_guid>[-\w]+)/posts/(?P<post_guid>[-\w]+)/$', api_views.get_posts, name="api_get_posts"),
 
 )
