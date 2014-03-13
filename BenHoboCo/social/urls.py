@@ -31,8 +31,9 @@ urlpatterns = patterns('',
     #posts/post_id - specific post
     #posts/author/bensontrinh - specific posts from a person
     url(r'^posts/$', views.posts, name="posts"),
-    url(r'^posts/(?P<post_id>\d+)/$', views.posts, name="posts"),
     url(r'^posts/create/$', views.create_post, name="create_post"),
+    url(r'^posts/(?P<post_id>\d+)/$', views.posts, name="posts"),
+    url(r'^posts/(?P<post_id>\d+)/comment/$', views.add_comment, name="posts"),
     url(r'^posts/(?P<post_id>\d+)/delete/$', views.delete_post, name="posts"),
 
     url(r'^posts/author/(?P<author_name>[-\w]+)/$', views.get_author_posts, name="author_posts"),

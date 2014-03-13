@@ -2,26 +2,41 @@
 {% block block_body %}
 <div class="row">
 	<div class="page-header">
-		<h1>{{author.user.username}} at {{post.time_stamp}}</h1>
+		<h1>{{user_post.title}} <small>at {{user_post.time_stamp}}</small></h1>
 	</div>
-	<div class="col-md-6 col-md-offset-2">
-		<h4>{{post.content}}</h4>
+	<div class="col-md-6 col-md-offset-1">
+		<p>{{user_post.content | safe}}</p>
 	</div>
 </div>
 <hr/>
-<div class="row col-md-3">
-	<h4 class="text-center">Add Comment</h4>
-</div>
-<div class="row col-md-4">
-	<form method="POST" action="/authors/{{author.user.username}}/post/{{post.id}}" role="form">
-		{% csrf_token %}
-		<!-- error messages for invalid post stuff here -->
-		<div class="form-group">
-			<textarea class="form-control" name="content" placeholder="Enter Comment"></textarea>
+<div class="row">
+	<div class="col-md-9 col-md-offset-2">
+		{% for comment in user_post.comment_set.all %}
+		<div class="row">
+			<div class="col-md-2">
+				<h4>{{comment.author}}<br/><small>{{comment.pubDate}}</small></h4>
+			</div>
+			<div class="col-md-4">
+				<p>{{comment.comment}}</p>
+			</div>
 		</div>
-		<div class="form-group">
-			<input type="submit" class="btn btn-primary" value="Add Comment"/>
+		<hr/>
+		{% endfor %}
+		<div class="row col-md-3">
+			<h4 class="text-center">Add Comment</h4>
 		</div>
-	</form>
+		<div class="row col-md-4">
+			<form method="POST" action="/posts/{{user_post.id}}/comment/" role="form">
+				{% csrf_token %}
+				<!-- error messages for invalid post stuff here -->
+				<div class="form-group">
+					<textarea class="form-control" name="content" placeholder="Enter Comment"></textarea>
+				</div>
+				<div class="form-group">
+					<input type="submit" class="btn btn-primary" value="Add Comment"/>
+				</div>
+			</form>
+		</div>
+	</div>
 </div>
 {% endblock %}

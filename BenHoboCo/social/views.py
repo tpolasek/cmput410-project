@@ -6,14 +6,18 @@ from django.template import RequestContext
 from django.core.exceptions import ObjectDoesNotExist
 from social.forms import UserForm, AuthorForm, ImageUploadForm
 from django.db.models import Q
+from datetime import datetime
 
-from social.models import Post, Author, Image, Friend
+from social.models import Post, Author, Image, Friend, Comment
 from django.contrib.auth.models import User
 
 # Create your views here.
 
 def index( request ):
     context = RequestContext( request )
+    if request.user.is_authenticated():
+        a = Author.objects.get(user = request.user)
+        return render_to_response('social/personalhomePage.html',{'author': a}, context)
     return render_to_response('social/index.html',{},context)
 
 def get_all_authors(request):
@@ -258,10 +262,13 @@ def posts(request, post_id = None):
 
     context = RequestContext( request )
     context_dict = {}
+    user = request.user
+    context_dict['user'] = user
 
     if post_id is not None:
         p = Post.objects.get(id = post_id )
-        context_dict['user_posts'] = {p}
+        context_dict['user_post'] = p
+        return render_to_response('social/post.html', context_dict, context)
     else:
         p = Post.objects.filter(visibility="PUBLIC")
         context_dict['user_posts'] = p
@@ -305,3 +312,16 @@ def upload_image(request, author_name ):
 
     return HttpResponseRedirect("/authors/"+ request.user.username )
 
+@login_required
+def add_comment(request, post_id):
+    context = RequestContext(request)
+    if request.method == "POST":
+        u = request.user
+        commented_post = Post.objects.get(id = post_id)
+        author = Author.objects.get(user = u)
+        content = request.POST["content"]
+
+        c = Comment(author = author, comment = content, pubDate = datetime.now(), post = commented_post)
+        c.save()
+
+    return HttpResponseRedirect("/posts/" + post_id)
