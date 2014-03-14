@@ -23,7 +23,7 @@ class Author(models.Model):
 
     guid = UUIDField()
     
-    github = models.CharField(max_length=30)
+    github = models.CharField(max_length=30, default="")
 
     def __unicode__(self):
         return self.user.username
