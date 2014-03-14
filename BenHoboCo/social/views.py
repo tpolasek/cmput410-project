@@ -187,17 +187,17 @@ def create_post(request, author_name = None ):
     if request.method == "POST":
         access = request.POST['access']
         c = request.POST['content']
-        
+        post_title = request.POST['title']
         t = request.POST['content_type']
         if t == "markup":
             import markdown2
             c = markdown2.markdown(c)
         elif t == "text":
-            c = "<pre>"+c+"</pre>"
+            c = c
         else:
             pass
 
-        p = Post(author=a, visibility=access, content=c)
+        p = Post(author=a, visibility=access, content=c, title=post_title)
         p.save()
 
         return HttpResponseRedirect("/authors/" + u.username )

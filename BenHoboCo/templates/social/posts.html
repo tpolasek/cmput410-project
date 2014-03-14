@@ -1,12 +1,13 @@
 {% extends 'social/base.html' %}
 {% block block_body %}
 <div class="row">
-	<div class="col-md-3">
+	<div class="col-md-2">
 		<div class="page-header">
 			<h2><strong> My Posts </strong></h2>		
 		</div>
 		<div class="list-group">
-			<a href="/posts/create" class="btn btn-primary">Create New Post</a>
+			<p><a href="/posts/create" class="btn btn-success btn-block">Create New Post</a></p>
+			<p><a href="/" class="btn btn-primary btn-block">Home</a></p>
 		</div>
 	</div>
 	<div class="col-md-8">
@@ -16,8 +17,10 @@
 		<div class="list-group">
 			{% for post in user_posts %}
 				<a href="/posts/{{post.id}}" class="list-group-item">
-					<h4 class="list-group-item-heading">{{post.title}}<small>{{post.time_stamp}}</small></h4>
-					<p class="list-group-item-text">{{post.content | safe}}</p>
+					<h4 class="list-group-item-heading">{{post.title}}  <small>{{post.pubDate}}</small></h4>
+					<div class="well">
+						<p class="list-group-item-text">{{post.content | safe}}</p>
+					</div>
 					<p class="list-group-item-text text-right"><small><strong>{{post.comment_set.all|length}} Comments</strong></small></p>
 				</a>
 			{% endfor %}
