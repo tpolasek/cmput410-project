@@ -110,6 +110,10 @@ def get_author_posts(request, author_name ):
 
     return render_to_response('social/posts.html', context_dict, context )
 
+def search_friend(request):
+    context = RequestContext(request)
+    return render_to_response('social/friendSearch.html', {}, context)
+
 def delete_friend(request, author_name, friend_name):
     context = RequestContext( request )
 

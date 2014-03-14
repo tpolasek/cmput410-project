@@ -58,8 +58,12 @@ WSGI_APPLICATION = 'BenHoboCo.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'social.db'),
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME':'helix',
+        'USER':'myuser',
+        'PASSWORD':'mypass',
+        'HOST':'2hex.com',
+        'PORT':'3306',
     }
 }
 

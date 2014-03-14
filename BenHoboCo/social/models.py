@@ -126,7 +126,7 @@ class Post(models.Model):
         )
 
 class Comment(models.Model):
-    author = models.OneToOneField(Author)
+    author = models.ForeignKey(Author)
     pubDate = models.DateTimeField(default=datetime.now)
     post = models.ForeignKey(Post)
     comment = models.TextField()
