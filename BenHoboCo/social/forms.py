@@ -18,7 +18,7 @@ class AuthorForm(forms.ModelForm):
 
     class Meta:
         model = Author
-        fields = ('image', )
+        fields = ('image', 'github')
 
 class ImageUploadForm(forms.Form):
     image = forms.ImageField()

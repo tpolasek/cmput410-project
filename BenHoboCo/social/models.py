@@ -22,6 +22,8 @@ class Author(models.Model):
     host = models.URLField(max_length=256) #This specifies the authors host
 
     guid = UUIDField()
+    
+    github = models.CharField(max_length=30)
 
     def __unicode__(self):
         return self.user.username
@@ -31,6 +33,7 @@ class Author(models.Model):
             id = self.guid,
             host = self.host,
             displayname = self.user.first_name,
+            github = self.github
         )
 
     def get_full_name(self):

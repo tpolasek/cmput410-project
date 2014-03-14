@@ -35,37 +35,45 @@ def get_author(request, author_name = None):
     #get User object then find the Author object from it
     u = User.objects.get(username__iexact=author_name)
     a = Author.objects.get(user=u)
+    
+    if request.method == "GET":
 
-    #in my profile I want to see posts that are private to me
-    #posts that are from my friends that are shared as "friends of friends"
-    #posts that are shared to me by local_friends
+        #in my profile I want to see posts that are private to me
+        #posts that are from my friends that are shared as "friends of friends"
+        #posts that are shared to me by local_friends
 
-    #posts that are shared to me by global_friends
-    #posts that are shared to me by friends of friends
+        #posts that are shared to me by global_friends
+        #posts that are shared to me by friends of friends
 
-    #friends of author
-    friends = Friend.objects.filter( author = Author.objects.get(user=request.user) )
+        #friends of author
+        friends = Friend.objects.filter( author = Author.objects.get(user=request.user) )
 
-    #Get the posts where the author is the user signed in
-    # and also where the author is in the list of friends
-    friend_names = [ friend.friend_name for friend in friends ]
-    users = User.objects.filter(username__in=friend_names)
+        #Get the posts where the author is the user signed in
+        # and also where the author is in the list of friends
+        friend_names = [ friend.friend_name for friend in friends ]
+        users = User.objects.filter(username__in=friend_names)
 
-    authors = Author.objects.filter(user__in=users)
+        authors = Author.objects.filter(user__in=users)
 
-    #If the post is private, we won't show it. 
-    #If the post is friends_of_friends we will show it
-    #If the post is local then the user will be registered. Since we are only polling
-    #users that are registered and finding the authors that way, we will only
-    #have local friends atm.
-    p = Post.objects.filter( ~Q(visibility = "PRIVATE" )).filter(( Q(author = a) | Q(author__in = authors) ) )
+        #If the post is private, we won't show it. 
+        #If the post is friends_of_friends we will show it
+        #If the post is local then the user will be registered. Since we are only polling
+        #users that are registered and finding the authors that way, we will only
+        #have local friends atm.
+        p = Post.objects.filter( ~Q(visibility = "PRIVATE" )).filter(( Q(author = a) | Q(author__in = authors) ) )
 
-    friend_names.append(request.user.username)
-    context_dict = {'author':a, 'user_posts': p, 'our_friends': friend_names }
+        friend_names.append(request.user.username)
+        context_dict = {'author':a, 'user_posts': p, 'our_friends': friend_names }
 
-    # DO NOT PASS THE USER IN IT WILL OVERWRITE THE CURRENTLY SIGNED IN USER
+        # DO NOT PASS THE USER IN IT WILL OVERWRITE THE CURRENTLY SIGNED IN USER
 
-    return render_to_response('social/profile.html', context_dict, context )
+        return render_to_response('social/profile.html', context_dict, context )
+    elif request.method == "POST":
+        if u.username == request.user.username:
+            form = AuthorForm(request.POST, instance=a)
+            form.save()
+        return HttpResponseRedirect("/authors/%s/" % author_name) 
+    
 
 def get_author_images(request, author_name, image_id = None ):
     context = RequestContext( request )

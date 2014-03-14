@@ -58,6 +58,21 @@
 						{% else %}
 							<p class="text-warning"> This user has no picture! </p>
 						{% endif %}
+                        <!--User's profile only items -->
+                        {% if user.username == author.user.username %}
+                            <br />
+                            <li class="list-group-item">
+                                <p>Github account:</p>
+                                <form action="/authors/{{user.username}}/" method="post" >
+                                    {% csrf_token %}
+                                    <p>
+                                        <input type="text" name="github"  value="{{author.github}}"/>
+                                    </p>
+                                    <!--<input type="hidden" name="username" value="{{user.username}}" />-->
+                                    <input type="submit" class="btn btn-default" value="Save" />
+                                </form>
+                            </li>
+                        {% endif %}
 					</li>
 				</ul>
 		</div>
