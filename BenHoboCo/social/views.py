@@ -17,7 +17,8 @@ def index( request ):
     context = RequestContext( request )
     if request.user.is_authenticated():
         a = Author.objects.get(user = request.user)
-        return render_to_response('social/personalhomePage.html',{'author': a}, context)
+        p = Post.objects.filter(visibility = "PUBLIC")
+        return render_to_response('social/personalhomePage.html',{'author': a, 'posts': p}, context)
     return render_to_response('social/index.html',{},context)
 
 def get_all_authors(request):
@@ -200,7 +201,7 @@ def create_post(request, author_name = None ):
         p = Post(author=a, visibility=access, content=c, title=post_title)
         p.save()
 
-        return HttpResponseRedirect("/authors/" + u.username )
+        return HttpResponseRedirect("/posts/")
 
     return render_to_response('social/createPost.html', context_dict, context)
 
@@ -277,13 +278,18 @@ def posts(request, post_id = None):
     user = request.user
     context_dict['user'] = user
 
+
     if post_id is not None:
         p = Post.objects.get(id = post_id )
         context_dict['user_post'] = p
         return render_to_response('social/post.html', context_dict, context)
     else:
-        p = Post.objects.filter(visibility="PUBLIC")
-        context_dict['user_posts'] = p
+        a = Author.objects.get(user = user)
+        p = Post.objects.filter(author=a)
+        if not p:
+            context_dict['user_posts'] = None
+        else:
+            context_dict['user_posts'] = p
 
     return render_to_response('social/posts.html', context_dict, context )
 
