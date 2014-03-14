@@ -21,6 +21,9 @@ urlpatterns = patterns('',
     url(r'^authors/(?P<author_name>[-\w]+)/friends/(?P<friend_name>\w+)/delete/$',views.delete_friend, name="authors_delete_friend"),
     url(r'^authors/(?P<author_name>[-\w]+)/friends/(?P<friend_name>\w+)/$',views.get_author_friends, name="authors_specific_friend"),
 
+    # Friends
+    url(r'^friends/search/$',views.search_friend, name="authors_search_friend"),
+
     #This should be changed to
     #images/author/author_name
     #images/author/author_name/image_id or #images/image_id

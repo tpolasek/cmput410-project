@@ -1,0 +1,25 @@
+{% extends 'social/base.html' %}
+{% block block_body %}
+<div class="row">
+	<div class="page-header">
+		<h1>Find a Friend</h1>
+	</div>
+	<form class="form-horizontal" role="form" method="POST" action="/friends/search">
+		<div class="form-group">
+			<label for="friendSearch" class="col-sm-1 control-label">Search:</label>
+			<div class="col-sm-2">
+				<select class="form-control">
+					<option>Name</option>
+					<option>Host</option>
+				</select>
+			</div>
+			<div class="col-sm-8">
+				<input type="text" class="form-control" name="friendSearch" placeholder="Enter a name, host, or address"/>
+			</div>
+			<div class="col-sm-1">
+				<button type="submit" class="btn btn-success">Search!</button>
+			</div>
+		</div>
+	</form>
+</div>
+{% endblock %}
