@@ -1,46 +1,26 @@
 {% extends 'social/base.html' %}
 {% block block_body %}
 <div class="row">
-    <div class="page-header">
-        <h2>Friends of {{ author.get_full_name }}</h2>
-        <a href="addfriend">Add a friend</a> <!-- TODO make it pretty -->
-    </div>
-    {% if user_friends %}
-    {% for friend in user_friends %}
-    <div class="col-sm-6 col-md-4">
-        <div class="thumbnail">
-          <div class="caption">
-            <div class="text-right">
-                <!-- <a href="" class="btn btn-danger btn-xs"><span class="glyphicon glyphicon-remove"></span> Unfriend</a> TODO add the little x back in -->
-                <form method="POST" action="{{friend.friend_name}}/delete/">
-                    {% csrf_token %}
-                    <input type="hidden" name="friend_location" value="{{friend.host}}"/>
-                    <input type="submit" class="btn btn-danger btn-xs" value="Unfriend"/>
-                </form>
-            </div>
-            <a href="{{friend.host}}/authors/{{friend.friend_name}}"><h3>{{friend.friend_name}}</h3></a>
+    <div class="col-md-2">
+        <div class="page-header">
+            <h2><strong> My Friends </strong></h2>        
+        </div>
+        <div class="list-group">
+            <p><a href="/friends/search/" class="btn btn-success btn-block">Find a Friend</a></p>
+            <p><a href="/" class="btn btn-primary btn-block">Home</a></p>
         </div>
     </div>
-    {% endfor %}
-
-    {% endif %}
-
-    {% if friend %}
-    <div class="col-sm-4 col-md-3">
-        <div class="thumbnail">
-          <div class="caption">
-            <div class="text-right">
-                <!-- <a href="" class="btn btn-danger btn-xs"><span class="glyphicon glyphicon-remove"></span> Unfriend</a> TODO add the little x back in -->
-                <form method="DELETE" action="{{friend.name}}/">
-                    {% csrf_token %}
-                    <input type="hidden" name="friend_location" value="{{friend.location}}"/>
-                    <input type="submit" class="btn btn-danger btn-xs" value="Unfriend"/>
-                </form>
-            </div>
-            <a href="{{friend.location}}/authors/{{friend.name}}"><h3>{{friend.name}}</h3></a>
+    <div class="col-md-8">
+        <div class="page-header">
+            <h2><span class="glyphicon glyphicon-heart"></span> My Friends </h2>
+        </div>
+        <div class="list-group">
+            {% if user_friends == None %}
+                <p class="text-center"> You have no friends! </p>
+                <p class="text-center"> You can make some <a href="/authors">here</a>.</p>
+            {% else %}
+            {% endif %}
         </div>
     </div>
-    {% endif %}
-
 </div>
 {% endblock %}

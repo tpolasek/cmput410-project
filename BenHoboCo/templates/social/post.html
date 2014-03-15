@@ -1,20 +1,25 @@
 {% extends 'social/base.html' %}
 {% block block_body %}
 <div class="row">
-	<div class="col-md-2">
-		<div class="page-header">
-			<h2><strong> My Posts </strong></h2>		
+	{% if user_post.author.user == request.user %}
+		<div class="col-md-2">
+			<div class="page-header">
+				<h2><strong> My Posts </strong></h2>		
+			</div>
+			<div class="list-group">
+				<p><a href="/posts/create" class="btn btn-success btn-block">Create New Post</a></p>
+				<form method="POST" action="/posts/{{user_post.id}}/delete/">
+					{% csrf_token %}
+					<p><input type="submit" class="btn btn-danger btn-block" value="Delete Post" /></p>
+				</form>
+				<p><a href="/posts/" class="btn btn-primary btn-block">Back to Posts</a></p>
+			</div>
 		</div>
-		<div class="list-group">
-			<p><a href="/posts/create" class="btn btn-success btn-block">Create New Post</a></p>
-			<p><a href="/posts/{{user_post.id}}/delete" class="btn btn-danger btn-block">Delete Post</a></p>
-			<p><a href="/posts/" class="btn btn-primary btn-block">Back to Posts</a></p>
-			
-		</div>
-	</div>
+	{% endif %}
 	<div class="col-md-8">
 		<div class="page-header">
-			<h1>{{user_post.title}} <small>at {{user_post.pubDate}}</small></h1>
+			<h1>{{user_post.title}}</h1>
+			<h3><a href="/authors/{{user_post.author.user.username}}/"><span class="glyphicon glyphicon-user"></span> {{user_post.author.user.username}}</a>  <small>at {{user_post.pubDate}}</small></h3>
 		</div>
 		<div class="well">
 			<p>{{user_post.content | safe}}</p>

@@ -21,11 +21,12 @@ def index( request ):
         return render_to_response('social/personalhomePage.html',{'author': a, 'posts': p}, context)
     return render_to_response('social/index.html',{},context)
 
+@login_required
 def get_all_authors(request):
     context = RequestContext( request )
+    # We grab all the authors that aren't the currently logged in user.
+    a = Author.objects.exclude(user=request.user)
 
-    #Get all authors
-    a = Author.objects.all()
     context_dict  = {'authors': a}
     return render_to_response('social/authors.html', context_dict, context )
 
@@ -280,6 +281,7 @@ def posts(request, post_id = None):
 
 
     if post_id is not None:
+        # Single post.
         p = Post.objects.get(id = post_id )
         context_dict['user_post'] = p
         return render_to_response('social/post.html', context_dict, context)
@@ -292,6 +294,28 @@ def posts(request, post_id = None):
             context_dict['user_posts'] = p
 
     return render_to_response('social/posts.html', context_dict, context )
+
+@login_required
+def friends(request, friend_id = None):
+    context = RequestContext( request )
+    context_dict = {}
+    user = request.user
+    context_dict['user'] = user
+
+    if friend_id is not None:
+        f = Friend.objects.get(id = friend_id)
+        context_dict['user_friend'] = f
+        return render_to_response('social/friend.html', context_dict, context)
+    else:
+        a = Author.objects.get(user = user)
+        f = Friend.objects.filter(author = a)
+        if not f:
+            context_dict['user_friends'] = None
+        else:
+            context_dict['user_friends'] = f
+
+    return render_to_response('social/friends.html', context_dict, context)
+
 
 @login_required
 def delete_post(request, post_id ):
@@ -313,7 +337,7 @@ def delete_post(request, post_id ):
         posts = Post.objects.filter(author=a)
 
 
-    return HttpResponseRedirect("/authors/" + u.username )
+    return HttpResponseRedirect("/posts/")
 
 def upload_image(request, author_name ):
     print "Got here"

@@ -14,27 +14,26 @@
     {% if authors %}
     <div class="page-header">
         <h1>Authors</h1>
-        <p class="text-info"> These are all the <strong>fabulous social</strong> people who are part of our network!</p>
+        <p class="text-info"> Connect with your fellow <strong>believers</strong>!</p>
     </div>
     <div class="row">
-        {% for a in authors %}
-        <div class="col-sm-6 col-md-4">
-            <div class="thumbnail">
-              <!-- <img data-src="holder.js/300x200" alt="..."> -->
-              <div class="caption">
-                {% if a.image %}
-                    <img style="width: 75%; height: auto" src="{{ a.image.url | urlencode }}"/>
-                {% endif %}
-                <h3>{{ a.get_full_name }}</h3>
-
-                <p>This guy is <strong>social</strong>!</p>
-                <p>
-                    <a href="/authors/{{a.user.username}}" class="btn btn-primary" role="button">SOCIAL this person!</a>
-                </p>
+        <div class="col-md-8">
+          {% for a in authors %}
+          <div class="media">
+                <a class="pull-left" href="/authors/{{a.user.username}}">
+                  {% if a.image %}
+                    <img class="media-object" style="width: 75%; height: auto" src="{{ a.image.url | urlencode }}"/>
+                  {% else %}
+                    <img class="media-object" src="/static/img/placeholder.png"/>
+                  {% endif %}
+                </a>
+              <div class="media-body">
+                  <h3 class="media-heading">{{ a.get_full_name }}</h3>
+                  <p>{{a.user.email}}</p>
               </div>
           </div>
+          {% endfor %}
         </div>
-        {% endfor %}
     </div>
     {% endif %}
 
