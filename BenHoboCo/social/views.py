@@ -265,6 +265,60 @@ def user_login(request):
     else:
         return render_to_response('social/login.html',{},context)
 
+# POST: Updates the User and its associated Author object
+# GET: Presents the Account Management page.
+@login_required
+def manage_account(request):
+    context = RequestContext(request)
+
+    u = request.user
+    a = Author.objects.get(user = u)
+
+    # Update the user account information.
+    #if request.method == "POST":
+
+    return render_to_response('social/manageProfile.html', {'author': a, 'user': u}, context)
+
+# Changes a user's password.
+# Only accepts posts, and returns back to the management page.
+@login_required
+def user_change_password(request):
+    context = RequestContext(request)
+
+    u = request.user
+    a = Author.objects.get(user = u)
+
+    # Update the user account information.
+    if request.method == "POST":
+        newPassword = request.POST['newPassword']
+        passwordConfirm = request.POST['confirmPassword']
+
+        if newPassword != passwordConfirm:
+            return render_to_response('social/manageProfile.html', {'author': a, 'user': u, 'password_not_same': True}, context)
+        else:
+            u.set_password(newPassword)
+            u.save()
+            return render_to_response('social/manageProfile.html', {'author': a, 'user': u, 'password_change_success': True}, context)
+    return render_to_response('social/manageProfile.html', {'author': a, 'user': u}, context)
+
+# Updates the Author information.
+# Only accepts posts, and returns back to the management page.
+@login_required
+def user_update_author(request):
+    context = RequestContext(request)
+
+    u = request.user
+    a = Author.objects.get(user = u)
+
+    # Update the user account information.
+    if request.method == "POST":
+        newGithub = request.POST['gitHub']
+        a.github = newGithub
+        a.save()
+
+    return render_to_response('social/manageProfile.html', {'author': a, 'user': u}, context)
+
+
 @login_required
 def user_logout(request):
     logout(request)

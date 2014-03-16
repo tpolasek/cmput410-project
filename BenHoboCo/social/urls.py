@@ -8,6 +8,10 @@ urlpatterns = patterns('',
     url(r'^register/$', views.user_register),
     url(r'^login/$', views.user_login),
     url(r'^logout/$', views.user_logout),
+    url(r'^manageAccount/updateAuthor/$', views.user_update_author),
+    url(r'^manageAccount/changePassword/$', views.user_change_password),
+    url(r'^manageAccount/$', views.manage_account),
+
 
     #authors - All Authors
     #authors/author_name/ - Specific Author
@@ -42,10 +46,6 @@ urlpatterns = patterns('',
     url(r'^posts/author/(?P<author_name>[-\w]+)/$', views.get_author_posts, name="author_posts"),
 
     url(r'^authors/(?P<author_name>[-\w]+)/images/upload/$', views.upload_image, name="upload_image"),
-
-    #REMOVE THE FOLLOWING LATER
-    url(r'^authors/(?P<author_name>[-\w]+)/posts/$',views.get_author_posts, name="author_posts"),
-    url(r'^authors/(?P<author_name>[-\w]+)/posts/(?P<post_id>\w+)/$',views.get_author_posts, name="authors_specific_post"),
 
     #API
     url(r'^api/authors/$', api_views.get_authors, name="get_authors"),
