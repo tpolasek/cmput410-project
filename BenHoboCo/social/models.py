@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from datetime import datetime
 from django_extensions.db.fields import UUIDField
 from time import strftime
+from solo.models import SingletonModel
 
 ACCESSIBILITY_TYPES = (
     ('PUBLIC', 'Public'),
@@ -12,6 +13,20 @@ ACCESSIBILITY_TYPES = (
     ('FRIENDS', 'Friends'),
     ('FOAF', 'Friends of friends'),
 )
+
+class SiteConfiguration(SingletonModel):
+    #Share posts on other servers (global flag)
+    share_posts_remote = models.BooleanField(default=True)
+
+    #Require the server admin to OKAY new users
+    manual_user_signup = models.BooleanField(default=False)    
+
+    def __unicode__(self):
+        return u"Site Configuration"
+
+    class Meta:
+        verbose_name = "Site Configuration"
+        verbose_name_plural = "Site Configuration"
 
 class Author(models.Model):
 

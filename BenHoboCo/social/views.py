@@ -8,17 +8,20 @@ from social.forms import UserForm, AuthorForm, ImageUploadForm
 from django.db.models import Q
 from datetime import datetime
 
-from social.models import Post, Author, Image, Friend, Comment
+from social.models import *
 from django.contrib.auth.models import User
 
 # Create your views here.
 
 def index( request ):
     context = RequestContext( request )
-    if request.user.is_authenticated():
-        a = Author.objects.get(user = request.user)
-        p = Post.objects.filter(visibility = "PUBLIC")
-        return render_to_response('social/personalhomePage.html',{'author': a, 'posts': p}, context)
+    try: 
+        if request.user.is_authenticated():
+            a = Author.objects.get(user = request.user)
+            p = Post.objects.filter(visibility = "PUBLIC")
+            return render_to_response('social/personalhomePage.html',{'author': a, 'posts': p}, context)
+    except:
+        pass
     return render_to_response('social/index.html',{},context)
 
 @login_required
@@ -223,6 +226,11 @@ def user_register(request):
             user = user_form.save()
 
             user.set_password(user.password)
+            
+            site_config = SiteConfiguration.objects.get()
+            if site_config.manual_user_signup:
+                 user.is_active = False
+
             user.save()
 
             author = author_form.save(commit=False)
