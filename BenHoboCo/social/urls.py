@@ -11,7 +11,7 @@ urlpatterns = patterns('',
     url(r'^manageAccount/updateAuthor/$', views.user_update_author),
     url(r'^manageAccount/changePassword/$', views.user_change_password),
     url(r'^manageAccount/$', views.manage_account),
-
+    url(r'^manageAccount/changeImage/$', views.upload_profile_image),
 
     #authors - All Authors
     #authors/author_name/ - Specific Author
@@ -31,6 +31,11 @@ urlpatterns = patterns('',
     #This should be changed to
     #images/author/author_name
     #images/author/author_name/image_id or #images/image_id
+    url(r'^images/$',views.get_author_images, name="author_images"),
+    url(r'^images/(?P<image_id>\d+)/$',views.get_author_images, name="author_images"),
+    url(r'^images/create/$',views.create_image, name="create_image"),
+    url(r'^images/upload/$', views.upload_image,name="upload_images"),
+    url(r'^authors/(?P<author_name>[-\w]+)/images/create',views.create_image, name="create_image"),
     url(r'^authors/(?P<author_name>[-\w]+)/images/$',views.get_author_images, name="author_images"),
     url(r'^authors/(?P<author_name>[-\w]+)/images/(?P<image_id>\d+)/$',views.get_author_images, name="authors_specific_image"),    
 
@@ -42,10 +47,8 @@ urlpatterns = patterns('',
     url(r'^posts/(?P<post_id>\d+)/$', views.posts, name="posts"),
     url(r'^posts/(?P<post_id>\d+)/comment/$', views.add_comment, name="posts"),
     url(r'^posts/(?P<post_id>\d+)/delete/$', views.delete_post, name="posts"),
-
     url(r'^posts/author/(?P<author_name>[-\w]+)/$', views.get_author_posts, name="author_posts"),
 
-    url(r'^authors/(?P<author_name>[-\w]+)/images/upload/$', views.upload_image, name="upload_image"),
 
     #API
     url(r'^api/authors/$', api_views.get_authors, name="get_authors"),

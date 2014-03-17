@@ -80,11 +80,16 @@ def get_author(request, author_name = None):
         return HttpResponseRedirect("/authors/%s/" % author_name) 
     
 
-def get_author_images(request, author_name, image_id = None ):
+def get_author_images(request, author_name = None, image_id = None ):
     context = RequestContext( request )
     
+    
     #get User object then find the Author object from it
-    u = User.objects.get(username__iexact=author_name)
+    if author_name is not None:
+        u = User.objects.get(username__iexact=author_name)
+    else:
+        u = request.user
+
     a = Author.objects.get(user=u)
     context_dict = {}
     
@@ -208,6 +213,18 @@ def create_post(request, author_name = None ):
         return HttpResponseRedirect("/posts/")
 
     return render_to_response('social/createPost.html', context_dict, context)
+
+
+
+@login_required
+def create_image(request, author_name = None ):
+    context = RequestContext(request)
+    u = request.user
+    a = Author.objects.get(user = u)
+
+    context_dict = {'author': a, 'success': False }
+    return render_to_response('social/createImage.html', context_dict, context)
+
 
 def user_register(request):
 
@@ -401,20 +418,32 @@ def delete_post(request, post_id ):
 
     return HttpResponseRedirect("/posts/")
 
-def upload_image(request, author_name ):
-    print "Got here"
-    if request.method == "POST":
-        
+@login_required
+def upload_profile_image(request):
+    context = RequestContext(request)
+    user=Request.user
+    author = Author.objects.get(user=user)
+    if request.method == "POST":     
         form = ImageUploadForm(request.POST, request.FILES)
         if form.is_valid():
-            print "Form is valid"
-            author = Author.objects.get(user=request.user)
             im = form.cleaned_data['image']
 
             author.image = im
             author.save()
+    #TODO add notificiation
+    return render_to_response('social/manageProfile.html', {'author': author, 'user': user, 'image_change_success' : True}, context)
 
-    return HttpResponseRedirect("/authors/"+ request.user.username )
+@login_required
+def upload_image(request):
+    if request.method == "POST":
+        context = RequestContext(request)
+    	auth = Author.objects.get(user=request.user)
+        form = ImageUploadForm(request.POST, request.FILES)
+        if form.is_valid():
+            im = "/media/Images/" + str(form.cleaned_data['image']) 
+            image = Image(url=im, visibility='PUBLIC', author=auth)
+            image.save()
+    return HttpResponseRedirect("/images/")
 
 @login_required
 def add_comment(request, post_id):

@@ -5,6 +5,31 @@
 	<div class="page-header">
 		<h1>Manage Account</h1>
 	</div>
+
+
+	<div class="row">
+		<div class="row">
+			<div class="col-md-2 text-center">
+				<h4>  Change Profile Image</h4>	
+			</div>
+		</div>
+		<div class="row col-md-6 col-md-offset-3">
+			<form action="/manageAccount/changeImage/" method="post" enctype="multipart/form-data">
+				 {% csrf_token %}
+
+				{% if image_change_success %}
+					<div class="alert alert-success">
+						<strong>Success!</strong>  New profile image uploaded.
+					</div>
+				{% endif %}
+				 <p>
+				 <input id="id_image" type="file" name="image">
+				 </p>
+				 <input type="submit" class="btn btn-success" value="Upload Image">
+			 </form>
+
+		</div>
+	</div>
 	<div class="row">
 		<div class="row">
 			<div class="col-md-2 text-center">
@@ -44,7 +69,6 @@
 			</form>
 		</div>
 	</div>
-	<hr/>
 	<div class="row">
 		<div class="row">
 			<div class="col-md-2 text-center">
