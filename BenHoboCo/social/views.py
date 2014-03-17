@@ -421,13 +421,12 @@ def delete_post(request, post_id ):
 @login_required
 def upload_profile_image(request):
     context = RequestContext(request)
-    user=Request.user
+    user=request.user
     author = Author.objects.get(user=user)
     if request.method == "POST":     
         form = ImageUploadForm(request.POST, request.FILES)
         if form.is_valid():
             im = form.cleaned_data['image']
-
             author.image = im
             author.save()
     #TODO add notificiation
@@ -440,8 +439,8 @@ def upload_image(request):
     	auth = Author.objects.get(user=request.user)
         form = ImageUploadForm(request.POST, request.FILES)
         if form.is_valid():
-            im = "/media/Images/" + str(form.cleaned_data['image']) 
-            image = Image(url=im, visibility='PUBLIC', author=auth)
+            url = "/media/Images/" + str(form.cleaned_data['image']) 
+            image = Image(image=form.cleaned_data['image'],url=url, visibility='PUBLIC', author=auth)
             image.save()
     return HttpResponseRedirect("/images/")
 

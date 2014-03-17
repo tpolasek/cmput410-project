@@ -96,6 +96,7 @@ class Image(models.Model):
     author = models.ForeignKey(Author, related_name="author")
     url = models.CharField(max_length=256)
     visibility = models.CharField( max_length=128, choices=ACCESSIBILITY_TYPES )
+    image = models.ImageField( blank=True, upload_to="Images")
 
     def __unicode__(self):
         return self.url

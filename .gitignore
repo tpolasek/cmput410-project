@@ -1,3 +1,5 @@
+./BenHoboCo/media/*
+
 *.py[cod]
 
 # C extensions

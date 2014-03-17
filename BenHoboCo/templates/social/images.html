@@ -1,22 +1,39 @@
 {% extends 'social/base.html' %}
 {% block block_body %}
 <div class="row">
-    {% if user_images %}
-        <ul>
-        {% for i in user_images %}
-            <li><p><b>Author:</b> {{ i.author.user.username }}  </p>
-                <p><b>URL:</b> {{ i.url | urlencode }}</p>
-                <p><b>Accessibility:</b> {{i.accessibility }}</p>
-            </li>
-        {% endfor %}
-        </ul>
-    {% endif %}
+	<div class="col-md-2">
+		<div class="page-header">
+			<h2><strong> My Images </strong></h2>		
+		</div>
+		<div class="list-group">
+			<p><a href="/images/create" class="btn btn-success btn-block">Upload Image</a></p>
+			<p><a href="/" class="btn btn-primary btn-block">Home</a></p>
+		</div>
+	</div>
+	<div class="col-md-8">
+		
+		{% if user_images  %}
+		<div class="page-header">
+			<h2><span class="glyphicon glyphicon-comment"></span>  All My Images</h2>
+		</div>
+		{% endif %}
+		<div class="list-group">
+			{% if user_images  %}
+				<ul>
+				{% for i in user_images %}
+				    <li>
+				    <p><a href="/images/{{i.id}}"><img width=auto height=150 src="{{ i.url | urlencode }}"/></a></p>
+				    </li>
+				{% endfor %}
+				</ul>
+			 {% endif %}
 
-    {% if image %}
-        <p><b>Author:</b> {{ image.author.user.username }}</p>
-        <p><b>Content: </b> {{ image.url }} </p>
-        <p><b>Accessibility:</b> {{image.accessibility }}</p>
-        <p><img src="{{ image.url | urlencode }}"/></p>
-    {% endif %}
+			    {% if image %}
+				<p><b>Accessibility:</b> {{image.accessibility }}</p>
+				<p><img src="{{ image.url | urlencode }}"/></p>
+			    {% endif %}
+		</div>
+	</div>
 </div>
 {% endblock %}
+
