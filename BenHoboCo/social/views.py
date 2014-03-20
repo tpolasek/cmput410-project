@@ -11,6 +11,8 @@ from datetime import datetime
 from social.models import *
 from django.contrib.auth.models import User
 
+import json
+
 # Create your views here.
 
 def index( request ):
@@ -122,7 +124,31 @@ def get_author_posts(request, author_name ):
 
 def search_friend(request):
     context = RequestContext(request)
-    return render_to_response('social/friendSearch.html', {}, context)
+    context_dict = {}
+
+    # TODO Remco - Decide whether it is the local or a remote server
+    if request.method == "POST":
+        name = request.POST["friend_name"]
+        host = request.POST["host_name"]
+
+        if host == "Localhost":
+            authors_json = json.dumps( [ author.json() for author in Author.objects.all() ] )
+
+        else:
+            authors_json = "[]"
+
+        # At this point we should have an authors JSON object
+        all_authors = json.loads( authors_json )
+
+        selected_authors = []
+        for author in all_authors:
+            if name in author['displayname']:
+                selected_authors.append( { 'name': author['displayname'], 'host': host, 'guid': author['guid'] } )
+
+        context_dict['found_authors'] = selected_authors
+
+
+    return render_to_response('social/friendSearch.html', context_dict, context)
 
 def delete_friend(request, author_name, friend_name):
     context = RequestContext( request )
