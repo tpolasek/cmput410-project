@@ -7,3 +7,4 @@ markdown2==2.2.1
 six==1.5.2
 wsgiref==0.1.2
 django-solo==1.0.4
+python-django-south==0.8.4
