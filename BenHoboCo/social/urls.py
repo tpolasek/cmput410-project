@@ -36,9 +36,9 @@ urlpatterns = patterns('',
     url(r'^images/(?P<image_id>\d+)/$',views.get_author_images, name="author_images"),
     url(r'^images/create/$',views.create_image, name="create_image"),
     url(r'^images/upload/$', views.upload_image,name="upload_images"),
-    url(r'^authors/(?P<author_name>[-\w]+)/images/create',views.create_image, name="create_image"),
-    url(r'^authors/(?P<author_name>[-\w]+)/images/$',views.get_author_images, name="author_images"),
-    url(r'^authors/(?P<author_name>[-\w]+)/images/(?P<image_id>\d+)/$',views.get_author_images, name="authors_specific_image"),    
+    url(r'^authors/(?P<author_guid>[-\w]+)/images/create',views.create_image, name="create_image"),
+    url(r'^authors/(?P<author_guid>[-\w]+)/images/$',views.get_author_images, name="author_images"),
+    url(r'^authors/(?P<author_guid>[-\w]+)/images/(?P<image_id>\d+)/$',views.get_author_images, name="authors_specific_image"),    
 
     #posts - all posts
     #posts/post_id - specific post
@@ -48,7 +48,7 @@ urlpatterns = patterns('',
     url(r'^posts/(?P<post_id>\d+)/$', views.posts, name="posts"),
     url(r'^posts/(?P<post_id>\d+)/comment/$', views.add_comment, name="posts"),
     url(r'^posts/(?P<post_id>\d+)/delete/$', views.delete_post, name="posts"),
-    url(r'^posts/author/(?P<author_name>[-\w]+)/$', views.get_author_posts, name="author_posts"),
+    url(r'^posts/author/(?P<author_guid>[-\w]+)/$', views.get_author_posts, name="author_posts"),
 
 
     #API

@@ -86,17 +86,16 @@ def get_author(request, author_guid = None):
         return HttpResponseRedirect("/authors/%s/" % author_guid) 
     
 
-def get_author_images(request, author_name = None, image_id = None ):
+def get_author_images(request, author_guid = None, image_id = None ):
     context = RequestContext( request )
     
     
     #get User object then find the Author object from it
-    if author_name is not None:
-        u = User.objects.get(username__iexact=author_name)
+    if author_guid is not None:
+        a = Author.objects.get(guid=author_guid)
     else:
-        u = request.user
-
-    a = Author.objects.get(user=u)
+        a = Author.objects.get(user=request.user)
+        
     context_dict = {}
     
     if image_id is not None:
@@ -112,12 +111,11 @@ def get_author_images(request, author_name = None, image_id = None ):
     #no content
     return render_to_response('social/images.html', context_dict, context )
 
-def get_author_posts(request, author_name ):
+def get_author_posts(request, author_guid ):
     context = RequestContext( request )
 
     #get User object then find the Author object from it
-    u = User.objects.get(username__iexact=author_name)
-    a = Author.objects.get(user=u)
+    a = Author.objects.get(guid=author_guid)
     context_dict = {}
     context_dict['author'] = a
 
@@ -255,7 +253,7 @@ def create_post(request, author_name = None ):
 
 
 @login_required
-def create_image(request, author_name = None ):
+def create_image(request, author_guid = None ):
     context = RequestContext(request)
     u = request.user
     a = Author.objects.get(user = u)
