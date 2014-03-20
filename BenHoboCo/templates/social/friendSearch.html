@@ -11,7 +11,9 @@
 			<div class="col-sm-2">
 				<select class="form-control" name="host_name">
 					<option>Select Host</option>
-					<option>Localhost</option>
+					{% for host in hosts %}
+						<option>{{ host }}</option>
+					{% endfor %}
 				</select>
 			</div>
 			<div class="col-sm-8">

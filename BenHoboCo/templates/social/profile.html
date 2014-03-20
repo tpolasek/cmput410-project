@@ -14,11 +14,13 @@
 				<h1>
 					{{ author.get_full_name }} <small>({{author.user.username}})</small>
 				</h1>
-				<form method="POST" action="/authors/{{user.username}}/friends/addfriend/">
+				<form method="POST" action="/authors/{{author.guid}}/friends/addFriend/">
 					{% csrf_token %}
 					
-					{% if not author.user.username in our_friends %}
-					<input type="hidden" name="friend_name" value="{{author.user.username}}"/>
+					{% if not author.guid in our_friends %}
+					<input type="hidden" name="friend_name" value="{{author.get_full_name}}"/>
+					<input type="hidden" name="friend_guid" value="{{author.guid}}"/>
+					<input type="hidden" name="friend_location" value=""/>
 					<input type="submit" value="Add Friend" class="btn btn-success"/>
 					{% endif %}
 				</form>

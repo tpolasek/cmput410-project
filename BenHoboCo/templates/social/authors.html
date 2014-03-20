@@ -20,7 +20,7 @@
         <div class="col-md-8">
           {% for a in authors %}
           <div class="media">
-                <a class="pull-left" href="/authors/{{a.user.username}}">
+                <a class="pull-left" href="/authors/{{a.guid}}">
                   {% if a.image %}
                     <img class="media-object" style="width: 75%; height: auto" src="{{ a.image.url | urlencode }}"/>
                   {% else %}

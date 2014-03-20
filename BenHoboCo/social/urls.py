@@ -19,10 +19,11 @@ urlpatterns = patterns('',
     #authors/author_name/friends - Specific Author Friends
     #authors/author_name/friends/friend_name - Specific Authors specific Friend
     url(r'^authors/$', views.get_all_authors, name="authors"),
-    url(r'^authors/(?P<author_name>[-\w]+)/$',views.get_author, name="author"),
-    url(r'^authors/(?P<author_name>[-\w]+)/friends/addfriend/$', views.add_remote_friend, name="author_add_friend"),
-    url(r'^authors/(?P<author_name>[-\w]+)/friends/(?P<friend_name>\w+)/delete/$',views.delete_friend, name="authors_delete_friend"),
-    url(r'^authors/(?P<author_name>[-\w]+)/friends/(?P<friend_name>\w+)/$',views.get_author_friends, name="authors_specific_friend"),
+    url(r'^authors/(?P<author_guid>[-\w]+)/$',views.get_author, name="author"),
+    url(r'^authors/(?P<author_guid>[-\w]+)/friends/addFriend/$', views.add_friend, name="author_add_friend"),
+    url(r'^authors/(?P<author_guid>[-\w]+)/friends/(?P<friend_guid>\w+)/delete/$',views.delete_friend, name="authors_delete_friend"),
+    url(r'^authors/(?P<author_guid>[-\w]+)/friends/$',views.get_author_friends, name="authors_specific_friend"),
+    url(r'^authors/(?P<author_guid>[-\w]+)/friends/(?P<friend_guid>\w+)/$',views.get_author_friends, name="authors_specific_friend"),
 
     # Friends
     url(r'^friends/$',views.friends, name="author_friends"),

@@ -6,6 +6,7 @@ from django.template import RequestContext
 from django.core.exceptions import ObjectDoesNotExist
 from social.forms import UserForm, AuthorForm, ImageUploadForm
 from django.db.models import Q
+from django.conf import settings
 from datetime import datetime
 
 from social.models import *
@@ -36,12 +37,15 @@ def get_all_authors(request):
     return render_to_response('social/authors.html', context_dict, context )
 
 #get specific author information
-def get_author(request, author_name = None):
+def get_author(request, author_guid = None):
     context = RequestContext( request )
 
-    #get User object then find the Author object from it
-    u = User.objects.get(username__iexact=author_name)
-    a = Author.objects.get(user=u)
+    try:
+        u = User.objects.get(username=author_guid)
+        a = Author.objects.get(user=u)
+    except User.DoesNotExist:
+        a = Author.objects.get(guid=author_guid)
+        u = a.user
     
     if request.method == "GET":
 
@@ -58,6 +62,8 @@ def get_author(request, author_name = None):
         #Get the posts where the author is the user signed in
         # and also where the author is in the list of friends
         friend_names = [ friend.friend_name for friend in friends ]
+        friend_guids = [ friend.friend_guid for friend in friends ]
+
         users = User.objects.filter(username__in=friend_names)
 
         authors = Author.objects.filter(user__in=users)
@@ -69,17 +75,15 @@ def get_author(request, author_name = None):
         #have local friends atm.
         p = Post.objects.filter( ~Q(visibility = "PRIVATE" )).filter(( Q(author = a) | Q(author__in = authors) ) )
 
-        friend_names.append(request.user.username)
-        context_dict = {'author':a, 'user_posts': p, 'our_friends': friend_names }
-
-        # DO NOT PASS THE USER IN IT WILL OVERWRITE THE CURRENTLY SIGNED IN USER
+        friend_guids.append(Author.objects.get(user=request.user).guid)
+        context_dict = {'author':a, 'user_posts': p, 'our_friends': friend_guids }
 
         return render_to_response('social/profile.html', context_dict, context )
     elif request.method == "POST":
         if u.username == request.user.username:
             form = AuthorForm(request.POST, instance=a)
             form.save()
-        return HttpResponseRedirect("/authors/%s/" % author_name) 
+        return HttpResponseRedirect("/authors/%s/" % author_guid) 
     
 
 def get_author_images(request, author_name = None, image_id = None ):
@@ -126,6 +130,8 @@ def search_friend(request):
     context = RequestContext(request)
     context_dict = {}
 
+    context_dict['hosts'] = settings.ALLOWED_HOSTS
+
     # TODO Remco - Decide whether it is the local or a remote server
     if request.method == "POST":
         name = request.POST["friend_name"]
@@ -150,41 +156,30 @@ def search_friend(request):
 
     return render_to_response('social/friendSearch.html', context_dict, context)
 
-def delete_friend(request, author_name, friend_name):
+def delete_friend(request, author_guid, friend_guid):
     context = RequestContext( request )
 
-    #get User object then find the Author object from it
     if request.method == "POST":
-        u = User.objects.get(username__iexact=author_name)
-        a = Author.objects.get(user=u)
-
-        friend_location = request.POST["friend_location"]
+        a = Author.objects.get(guid=author_guid)
+        u = a.user
 
         # Is it us trying to delete our own friend?
         if u.username == request.user.username:
-            friend = Friend.objects.get(friend_name=friend_name, author=a, host=friend_location)
+            friend = Friend.objects.get(friend_guid=friend_guid, author=a )
             friend.delete()
 
-    return HttpResponseRedirect("/authors/%s/friends/" % author_name) 
+    return HttpResponseRedirect("/authors/%s/friends/" % a.guid) 
 
-def get_author_friends(request, author_name, friend_name = None):
+def get_author_friends(request, author_guid, friend_guid = None):
     context = RequestContext( request )
 
-    u = User.objects.get(username__iexact=author_name)
-    a = Author.objects.get(user=u)
+    a = Author.objects.get(guid=author_guid)
+    u = a.user
     context_dict = {}
 
-    if request.method == "POST":
-        new_friend_name = request.POST['friend_name']
-        new_friend_location = request.POST['friend_location']
-
-        if not Friend.objects.filter(author=a, friend_name=new_friend_name, host=new_friend_location):
-            new_friend = Friend(friend_name=new_friend_name, host=new_friend_location, author=a)
-            new_friend.save()
-
-    if friend_name is not None:
+    if friend_guid is not None:
         try:
-            friend = Friend.objects.get(friend_name=friend_name)
+            friend = Friend.objects.get(friend_guid=friend_guid, author=a)
             context_dict['friend'] = friend
         except ObjectDoesNotExist:
             pass # Do nothing for now
@@ -198,19 +193,36 @@ def get_author_friends(request, author_name, friend_name = None):
     #no content
     return render_to_response('social/friends.html', context_dict, context )
 
-def add_remote_friend(request, author_name):
+def add_friend(request, author_guid):
     context = RequestContext(request)
-    u = User.objects.get(username__iexact=author_name)
-    a = Author.objects.get(user = u)
+
+    try:
+        u = User.objects.get(username=author_guid)
+        a = Author.objects.get(user=u)
+    except User.DoesNotExist:
+        a = Author.objects.get(guid=author_guid)
+        u = a.user
+
     context_dict = {'author': a}
 
     if request.method == "POST":
-        friend_name = request.POST["friend_name"]
-        friend_location = 'http://127.0.0.1:8000' #TODO turn this into something more permanent!
-        context_dict['friend_name'] = friend_name
-        context_dict['friend_location'] = friend_location
+        new_friend_name = request.POST['friend_name']
+        new_friend_guid = request.POST['friend_guid']
+        new_friend_location = request.POST['friend_location']
 
-    return render_to_response('social/addRemoteFriend.html', context_dict, context)
+        # If it is blank, we will be assuming it came from the best host of all!
+        if not new_friend_location:
+            new_friend_location = settings.ALLOWED_HOSTS[0]
+
+        if not Friend.objects.filter(author=a, friend_guid=new_friend_guid):
+            new_friend = Friend(friend_name=new_friend_name, host=new_friend_location, friend_guid=new_friend_guid, author=a)
+            new_friend.save()
+        else:
+            print "Already a friend!"
+
+        # TODO add friend request?
+
+    return HttpResponseRedirect('/authors/%s/friends/' % author_guid)
 
 @login_required
 def create_post(request, author_name = None ):

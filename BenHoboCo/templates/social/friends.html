@@ -29,6 +29,9 @@
                     <p class="text-center"> You have no friends! </p>
                     <p class="text-center"> You can make some <a href="/authors">here</a>.</p>
                 {% else %}
+                    {% for friend in user_friends %}
+                        <p class="text-center"> This is your friend: {{friend.friend_name}} </p>
+                    {% endfor %}
                     <!-- Populate this with friends. -->
                 {% endif %}
             </div>
