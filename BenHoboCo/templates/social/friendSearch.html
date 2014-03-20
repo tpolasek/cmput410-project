@@ -24,5 +24,36 @@
 			</div>
 		</div>
 	</form>
+	<hr/>
+	<div class="col-md-9 col-md-offset-1">
+		<div class="media">
+                <a class="pull-left" href="/authors/{{a.user.username}}">
+                  {% if a.image %}
+                    <img class="media-object" style="width: 75%; height: auto" src="{{ a.image.url | urlencode }}"/>
+                  {% else %}
+                    <img class="media-object" src="/static/img/placeholder.png"/>
+                  {% endif %}
+                </a>
+              <div class="media-body">
+                  <h3 class="media-heading"> FRIEND FULL NAME  <small>(friendUserName)</small>   <a href="#" class="btn btn-success"><span class="glyphicon glyphicon-plus"></span> Add Friend</a></h3>
+                  <p>Host: Kanto Region</p>
+                  <p>My Email @hotmail.com</p>
+              </div>
+        </div>
+        <div class="media">
+                <a class="pull-left" href="/authors/{{a.user.username}}">
+                  {% if a.image %}
+                    <img class="media-object" style="width: 75%; height: auto" src="{{ a.image.url | urlencode }}"/>
+                  {% else %}
+                    <img class="media-object" src="/static/img/placeholder.png"/>
+                  {% endif %}
+                </a>
+              <div class="media-body">
+                  <h3 class="media-heading"> FRIEND FULL NAME  <small>(friendUserName)</small>   <a href="#" class="btn btn-success"><span class="glyphicon glyphicon-plus"></span> Add Friend</a></h3>
+                  <p>Host: Johto Region</p>
+                  <p>My Email @hotmail.com</p>
+              </div>
+        </div>
+	</div>
 </div>
 {% endblock %}
