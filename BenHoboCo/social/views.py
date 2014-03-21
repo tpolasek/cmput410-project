@@ -135,7 +135,13 @@ def search_friend(request):
         name = request.POST["friend_name"]
         host = request.POST["host_name"]
 
-        if host == "Localhost":
+        print "HOST: ", host
+        # Some error checking
+        if host == "Select Host":
+            context_dict["host_unselected"] = True
+            return render_to_response('social/friendSearch.html', context_dict, context)
+
+        if host == "127.0.0.1:8000":
             authors_json = json.dumps( [ author.json() for author in Author.objects.all() ] )
 
         else:
@@ -147,7 +153,7 @@ def search_friend(request):
         selected_authors = []
         for author in all_authors:
             if name in author['displayname']:
-                selected_authors.append( { 'name': author['displayname'], 'host': host, 'guid': author['guid'] } )
+                selected_authors.append( { 'name': author['displayname'], 'host': host, 'guid': author['id'] } )
 
         context_dict['found_authors'] = selected_authors
 
@@ -191,6 +197,7 @@ def get_author_friends(request, author_guid, friend_guid = None):
     #no content
     return render_to_response('social/friends.html', context_dict, context )
 
+# Accepts a friend request.
 def add_friend(request, author_guid):
     context = RequestContext(request)
 
