@@ -197,6 +197,7 @@ def get_author_friends(request, author_guid, friend_guid = None):
     #no content
     return render_to_response('social/friends.html', context_dict, context )
 
+# Accepts a friend request.
 def add_friend(request, author_guid):
     context = RequestContext(request)
 

@@ -43,9 +43,22 @@
 					{% endif %}
 				</div>
 				<div class="media-body">
-					<h3 class="media-heading">{{author.name}} <a href="#" class="btn btn-success"><span class="glyphicon glyphicon-plus"></span> Add Friend</a></h3>
-					<p>Host: {{author.host}}</p>
-					<p>ID: {{author.guid}}</p>
+					<h3 class="media-heading">{{author.name}}</h3>
+					<div class="col-md-6">
+						<p>Host: {{author.host}}</p>
+						<p>ID: {{author.guid}}</p>
+					</div>
+					<div class="col-md-6">
+						<form method="POST" action="/authors/{{author.guid}}/friends/addFriend/">
+							{% csrf_token %}
+							<div class="form-group">
+								<input type="hidden" name="friend_name" value="{{author.name}}"/>
+								<input type="hidden" name="friend_guid" value="{{author.guid}}"/>
+								<input type="hidden" name="friend_location" value="{{author.host}}"/>
+								<input type="submit" id="addFriendButton" class="btn btn-success" class="form-control" value="Add Friend"/>
+							</div>
+						</form>
+					</div>
 				</div>
 			</div>
 		{% endfor %}
