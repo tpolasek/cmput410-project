@@ -18,6 +18,52 @@
 		</div>
 
 		<div class="list-group">
+            {% if author.github %}
+                <div class="list-group-item">
+                    <h4 class="list-group-item-heading"> Your recent Github activity</h4>
+                    <p class="list-group-item-text" id="github-content"></p>
+                </div>
+                <script>
+                    $(document).ready(function(){
+                        $.get("https://api.github.com/users/{{author.github}}/events", "json").done(function(data){
+                            var events= 0;
+                            for (d in data){
+                                if (events < 3) {
+                                    if (data[d]["type"] === "PushEvent"){
+                                        var commitText = "a new commit";
+                                        if (data[d].payload.size > 1) {
+                                            commitText = data[d].payload.size + " new commits"
+                                        }
+                                        $("#github-content").append("<a href=\"http://github.com/"+data[d].actor.login+"\">" 
+                                            +data[d].actor.login+"</a> pushed "+commitText+" to "+"<a href=\"http://github.com/"
+                                            +data[d].repo.name+"\">"+data[d].repo.name+"</a><br/>");
+                                        events++;
+                                    }
+                                    else if (data[d]["type"] === "ForkEvent"){
+                                        $("#github-content").append("<a href=\"http://github.com/"+data[d].actor.login+"\">" 
+                                            +data[d].actor.login+"</a> forked "+ "<a href=\"http://github.com/"
+                                            +data[d].repo.name+"\">"+data[d].repo.name+"</a><br/>");
+                                        events++;
+                                    }
+                                    else if (data[d]["type"] === "CommitCommentEvent"){
+                                        $("#github-content").append("<a href=\"http://github.com/"+data[d].actor.login+"\">" 
+                                            +data[d].actor.login+"</a> commented on a commit to "+ "<a href=\""
+                                            +data[d].payload.comment.html_url+"\">"+data[d].repo.name+"</a><br/>");
+                                        events++;
+                                    }
+                                    else if (data[d]["type"] === "PullRequestEvent"){
+                                        $("#github-content").append("<a href=\"http://github.com/"+data[d].actor.login+"\">" 
+                                            +data[d].actor.login+"</a> "+data[d].payload.action+" pull request #"
+                                            +data[d].payload.number+" to <a href=\""+ data[d].payload.pull_request.html_url
+                                            +"\">"+data[d].repo.name+"</a><br/>");
+                                        events++;
+                                    }
+                                }
+                            }
+                        });
+                    });
+                </script>
+            {% endif %}
 			{% for post in posts %}
 			<a href="/posts/{{post.id}}" class="list-group-item">
 				<h2 class="list-group-item-heading">{{post.title}}</h2>
