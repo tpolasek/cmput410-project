@@ -383,8 +383,9 @@ def user_update_author(request):
         newGithub = request.POST['gitHub']
         a.github = newGithub
         a.save()
+    	return render_to_response('social/manageProfile.html', {'author': a, 'user': u, 'github_success': True}, context)
 
-    return render_to_response('social/manageProfile.html', {'author': a, 'user': u}, context)
+    return render_to_response('social/manageProfile.html', {'author': a, 'user': u }, context)
 
 
 @login_required

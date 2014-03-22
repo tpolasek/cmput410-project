@@ -78,6 +78,12 @@
 		<div class="row col-md-6 col-md-offset-3">
 			<form method="POST" action="/manageAccount/updateAuthor/">
 				{% csrf_token %}
+				
+				{% if github_success %}
+					<div class="alert alert-success">
+						<strong>Success!</strong>  GitHub account linked!
+					</div>
+				{% endif %}
 				<div class="form-group">
 					<label for="gitHub">GitHub Information:</label>
 					<input type="text" name="gitHub" class="form-control" value="{{author.github}}">
