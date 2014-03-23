@@ -101,6 +101,15 @@ class Image(models.Model):
     def __unicode__(self):
         return self.url
 
+    @property
+    def base64( self ):
+        try:
+            img = open( self.image.path, "rb")
+            data = img.read()
+            return  "data:image/jpg;base64,%s" % data.encode('base64')
+        except IOError as e:
+            return "error"
+
 class Post(models.Model):
     author = models.ForeignKey(Author)
 
