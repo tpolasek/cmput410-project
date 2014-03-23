@@ -1,6 +1,12 @@
 cmput410-project
 ================
 
+AJAX Documentation
+================
+Github Activity on a User Profile uses Jquery/Adjax
+
+
+
 database-initialization
 ================
 How to rebuild the schema
