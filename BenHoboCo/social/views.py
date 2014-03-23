@@ -75,8 +75,10 @@ def get_author(request, author_guid = None):
         #have local friends atm.
         p = Post.objects.filter( ~Q(visibility = "PRIVATE" )).filter(( Q(author = a) | Q(author__in = authors) ) )
 
-        friend_guids.append(Author.objects.get(user=request.user).guid)
-        context_dict = {'author':a, 'user_posts': p, 'our_friends': friend_guids }
+    	images = Image.objects.filter(author=a)
+	friend_guids.append(Author.objects.get(user=request.user).guid)
+        
+	context_dict = {'author':a, 'user_posts': p, 'our_friends': friend_guids, 'user_images': images}
 
         return render_to_response('social/profile.html', context_dict, context )
     elif request.method == "POST":

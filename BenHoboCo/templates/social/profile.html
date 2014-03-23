@@ -50,6 +50,17 @@
 					<h2 class="panel-title">Images</h2>
 				</div>
 			</div>
+                	<div class="list-group">
+                        {% if user_images  %}
+                                <ul>
+                                {% for i in user_images %}
+                                    <li>
+                                    <p><a href="/images/{{i.id}}"><img width=auto height=150 src="{{ i.url | urlencode }}"/></a></p>
+                                    </li>
+                                {% endfor %}
+                                </ul>
+                         {% endif %}
+                	</div>
 		</div>
 
 		<div class="col-md-6">
