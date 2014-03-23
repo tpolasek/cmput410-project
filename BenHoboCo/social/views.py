@@ -13,6 +13,7 @@ from social.models import *
 from django.contrib.auth.models import User
 
 import json
+import requests
 
 # Create your views here.
 
@@ -132,29 +133,30 @@ def search_friend(request):
 
     context_dict['hosts'] = settings.ALLOWED_HOSTS
 
-    # TODO Remco - Decide whether it is the local or a remote server
     if request.method == "POST":
         name = request.POST["friend_name"]
         host = request.POST["host_name"]
 
-        print "HOST: ", host
         # Some error checking
         if host == "Select Host":
             context_dict["host_unselected"] = True
             return render_to_response('social/friendSearch.html', context_dict, context)
 
-        if host == "127.0.0.1:8000":
+        # Local host
+        if host == settings.ALLOWED_HOSTS[0]:
             authors_json = json.dumps( [ author.json() for author in Author.objects.all() ] )
 
+        # Remote host
         else:
-            authors_json = "[]"
+            request = requests.get("%s/api/authors" % (host))
+            authors_json = request.json()
 
         # At this point we should have an authors JSON object
         all_authors = json.loads( authors_json )
 
         selected_authors = []
         for author in all_authors:
-            if name in author['displayname']:
+            if name.lower() in author['displayname'].lower():
                 selected_authors.append( { 'name': author['displayname'], 'host': host, 'guid': author['id'] } )
 
         context_dict['found_authors'] = selected_authors
@@ -217,17 +219,29 @@ def add_friend(request, author_guid):
         new_friend_guid = request.POST['friend_guid']
         new_friend_location = request.POST['friend_location']
 
-        # If it is blank, we will be assuming it came from the best host of all!
+        # If it is blank, it will be localhost
         if not new_friend_location:
             new_friend_location = settings.ALLOWED_HOSTS[0]
 
-        if not Friend.objects.filter(author=a, friend_guid=new_friend_guid):
-            new_friend = Friend(friend_name=new_friend_name, host=new_friend_location, friend_guid=new_friend_guid, author=a)
-            new_friend.save()
-        else:
-            print "Already a friend!"
+        # Integrity check, are they trying to give us an invalid host?
+        if new_friend_location in settings.ALLOWED_HOSTS:
 
-        # TODO add friend request?
+            if not Friend.objects.filter(author=a, friend_guid=new_friend_guid):
+
+                # Try aren't a friend already
+
+                # Send the friend request
+                if( new_friend_location == settings.ALLOWED_HOSTS[0] ): # Local
+                    friended_author = Author.objects.get( guid=new_friend_guid )
+                    new_friend_request = FriendRequest( author=friended_author, friend_name=a.get_full_name(), host=a.host, friend_guid=a.guid, author_guid=friended_author.guid )
+                    new_friend_request.save()
+                else: #Remote
+                    remote_author_json = { "author": { "id": new_friend_guid, "host": new_friend_location, "displayname": new_friend_name }, "friend": a.json() }
+                    r = requests.post("%s/api/friendrequest"%(new_friend_location), data=remote_author_json)
+                    print "Remote friend request reponse code: %s" % (r.status_code)
+
+                new_friend = Friend(friend_name=new_friend_name, host=new_friend_location, friend_guid=new_friend_guid, author=a)
+                new_friend.save()
 
     return HttpResponseRedirect('/authors/%s/friends/' % author_guid)
 

@@ -47,7 +47,8 @@ class Author(models.Model):
         return dict (
             id = self.guid,
             host = self.host,
-            displayname = self.user.first_name,
+            displayname = self.get_full_name(),
+            url = "%s/authors/%s" % (self.host, self.guid),
             github = self.github
         )
 
