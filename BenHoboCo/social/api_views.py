@@ -6,11 +6,13 @@ from django.template import RequestContext
 from django.core.exceptions import ObjectDoesNotExist
 from social.forms import UserForm, AuthorForm, ImageUploadForm
 from django.db.models import Q
+from django.conf import settings
 
-from social.models import Post, Author, Image, Friend, Comment
+from social.models import Post, Author, Image, Friend, Comment, FriendRequest
 from django.contrib.auth.models import User
 from django.core import serializers
 from django.forms.models import model_to_dict
+from django.views.decorators.csrf import csrf_exempt
 
 import json
 
@@ -18,19 +20,19 @@ import json
 
 def get_authors(request, author_guid=None):
 
-    if author_guid is not None:
-        a = {Author.objects.get(guid=author_guid)}
-    else:
-        a = Author.objects.all()
+    if request.method == "GET":
+        if author_guid is not None:
+            a = {Author.objects.get(guid=author_guid)}
+        else:
+            a = Author.objects.all()
+        data = [ author.json() for author in a ]
+        return HttpResponse( json.dumps(data,indent=4), content_type="application/json")
+        #return HttpResponse( serializers.serialize( 'json', a ) )
 
-    #return HttpResponse( serializers.serialize( 'json', a ) )
-
-    if request.method == "POST":
+    elif request.method == "POST":
         #Implement the creation of author with json data
-        pass
+        print request.POST
 
-    data = [ author.json() for author in a ]
-    return HttpResponse( json.dumps(data,indent=4), content_type="application/json")
 
 def get_posts(request, author_guid = None, post_guid = None ):
 
@@ -90,3 +92,37 @@ def compare_friends(self, friend1_guid, friend2_guid):
 
     return HttpResponse( json.dumps(response, indent=4), content_type="application/json")
 
+@csrf_exempt
+def friend_request(request):
+    if request.method == "POST":
+        jsonreq = json.loads(request.body)
+        if jsonreq["query"] == "friendrequest":
+            author = jsonreq["author"]
+            print author
+            try:
+                u = User.objects.get(username=author["id"])
+                a = Author.objects.get(user=u)
+            except User.DoesNotExist:
+                a = Author.objects.get(guid=author["id"])
+                u = a.user
+            print a
+            context_dict = {'author': a}
+            friend = jsonreq["friend"]["author"]
+            new_friend_name = friend["displayname"]
+            new_friend_guid = friend["id"]
+            new_friend_location = friend["host"]
+            new_friend_url = friend["url"]
+            
+            print new_friend_location
+            print settings.ALLOWED_HOSTS
+            # Integrity check, are they trying to give us an invalid host?
+            if new_friend_location in settings.ALLOWED_HOSTS:
+                print "allowed!"
+                if not Friend.objects.filter(author=a, friend_guid=new_friend_guid):
+                    print "filter!"
+                    new_friend_request = FriendRequest( author=a, friend_name=new_friend_name, 
+                        host=new_friend_location, friend_guid=new_friend_guid, author_guid=a.guid, url=new_friend_url)
+                    new_friend_request.save()
+                    
+                    return HttpResponse(status=200)
+    return HttpResponse(status=400)

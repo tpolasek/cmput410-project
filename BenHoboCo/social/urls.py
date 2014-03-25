@@ -62,4 +62,7 @@ urlpatterns = patterns('',
 
     #Compares the two provided friends and checks if they are friends
     url(r'^api/friends/(?P<friend1_guid>[-\w]+)/(?P<friend2_guid>[-\w]+)/$', api_views.compare_friends, name="compare_friends"),
+    
+    #Friend request
+    url(r'^api/friendrequest/$', api_views.friend_request, name="friend_request"),
 )
