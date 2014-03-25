@@ -20,18 +20,18 @@ import json
 
 def get_authors(request, author_guid=None):
 
-    if request.method == "GET":
-        if author_guid is not None:
-            a = {Author.objects.get(guid=author_guid)}
-        else:
-            a = Author.objects.all()
-        data = [ author.json() for author in a ]
-        return HttpResponse( json.dumps(data,indent=4), content_type="application/json")
-        #return HttpResponse( serializers.serialize( 'json', a ) )
+    if author_guid is not None:
+        a = {Author.objects.get(guid=author_guid)}
+    else:
+        a = Author.objects.all()
 
-    elif request.method == "POST":
-        #Implement the creation of author with json data
-        print request.POST
+    #return HttpResponse( serializers.serialize( 'json', a ) )
+
+    if request.method == "POST":
+        pass
+
+    data = [ author.json() for author in a ]
+    return HttpResponse( json.dumps(data,indent=4), content_type="application/json")
 
 
 def get_posts(request, author_guid = None, post_guid = None ):
