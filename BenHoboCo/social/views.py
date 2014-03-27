@@ -498,9 +498,10 @@ def upload_image(request):
         context = RequestContext(request)
     	auth = Author.objects.get(user=request.user)
         form = ImageUploadForm(request.POST, request.FILES)
+        access = request.POST['access']
         if form.is_valid():
             url = "/media/Images/" + str(form.cleaned_data['image']) 
-            image = Image(image=form.cleaned_data['image'],url=url, visibility='PUBLIC', author=auth)
+            image = Image(image=form.cleaned_data['image'],url=url, visibility=access, author=auth)
             image.save()
     return HttpResponseRedirect("/images/")
 

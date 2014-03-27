@@ -29,7 +29,7 @@
 			 {% endif %}
 
 			    {% if image %}
-				<p><b>Accessibility:</b> {{image.accessibility }}</p>
+				<p><b>Access Control:</b> {{ image.visibility }}</p>
 				<p><img src="{{ image.url | urlencode }}"/></p>
 			    {% endif %}
 		</div>

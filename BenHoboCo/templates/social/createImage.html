@@ -14,14 +14,27 @@
 {% endif %}
 <div class="row col-md-9 col-md-offset-1">
 
+<div class="form-group col-md-4">
 <form action="/images/upload/" method="post" enctype="multipart/form-data">
  {% csrf_token %}
- <p>
- <input id="id_image" type="file" name="image">
- </p>
- <input type="submit" class="btn btn-default" value="Upload Image">
- </form>
 
+        <label for="fil_upload" class="control-label">File Upload</label>
+        <input id="id_image" type="file" name="image">         
+        <br>        
+        <label for="access" class="control-label">Access Control</label>
+                <select name="access" class="form-control">
+                    <option value="PUBLIC">Public</option>
+                    <option value="PRIVATE">Private</option>
+                    <option value="private_to_another">Private To another author</option>
+                    <option value="SERVERONLY">Friends on this host</option>
+                    <option value="FRIENDS">Friends</option>
+                    <option value="FOAF">Friends of friends</option>
+                </select>
+
+                <br>
+                <input type="submit" class="btn btn-primary" value="Upload Image">
+</form>
+</div> 
 </div>
 
 
