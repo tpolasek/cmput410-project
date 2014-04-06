@@ -38,10 +38,25 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'social',
+    'rest_framework',
     'solo',
+    'core',
     'south',
+    'images',
+    'posts',
+    'authors',
+    'friends',
+    'crispy_forms',
+    'sorl.thumbnail',
 )
+
+CACHES = {
+    'default': {
+        'BACKEND' : 'django.core.cache.backends.memcached.MemcachedCache',
+        'LOCATION' : '127.0.0.1:11211',
+        #'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+    }
+}
 
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -66,7 +81,7 @@ DATABASES = {
         'NAME':'helix',
         'USER':'myuser',
         'PASSWORD':'mypass',
-        'HOST':'2hex.com',
+        'HOST':'leago.btrinh.com',
         'PORT':'3306',
     }
 }
