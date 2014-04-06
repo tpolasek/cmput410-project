@@ -47,16 +47,7 @@ INSTALLED_APPS = (
     'authors',
     'friends',
     'crispy_forms',
-    'sorl.thumbnail',
 )
-
-CACHES = {
-    'default': {
-        'BACKEND' : 'django.core.cache.backends.memcached.MemcachedCache',
-        'LOCATION' : '127.0.0.1:11211',
-        #'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
-    }
-}
 
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
