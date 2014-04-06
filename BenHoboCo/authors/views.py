@@ -25,6 +25,7 @@ def get_all_authors(request):
     return render_to_response('social/authors.html', context_dict, context )
 
 #get specific author information
+@login_required
 def get_author(request, author_guid = None):
     context = RequestContext( request )
 

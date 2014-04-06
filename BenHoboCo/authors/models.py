@@ -15,6 +15,8 @@ class Author(models.Model):
 
     github = models.CharField(max_length=30, default="")
 
+    url = models.URLField(max_length=256) #This specifies the url of the authors page
+
     def __unicode__(self):
         return self.user.username
 

@@ -14,6 +14,7 @@ from posts.models import Post
 # Create your views here.
 def index( request ):
     context = RequestContext( request )
+    print "META %s" % request.META['REMOTE_ADDR']
     try:
         if request.user.is_authenticated():
             a = Author.objects.get(user = request.user)
@@ -32,6 +33,8 @@ def user_logout(request):
 def user_login(request):
     if request.user.is_authenticated():
         return redirect("/")
+
+    print "HTTP_HOST: %s" % request.META['HTTP_HOST']
 
     context = RequestContext(request)
 
@@ -78,6 +81,11 @@ def user_register(request):
 
             author = author_form.save(commit=False)
             author.user = user
+            author.save()
+
+            author.host = request.META['HTTP_HOST']
+            author.url = "http://%s/authors/%s" % ( request.META['HTTP_HOST'], author.guid )
+            print author.url
 
             author.save()
 
@@ -135,7 +143,7 @@ def upload_profile_image(request):
     context = RequestContext(request)
     user=request.user
     author = Author.objects.get(user=user)
-    if request.method == "POST":     
+    if request.method == "POST":
         form = ImageUploadForm(request.POST, request.FILES)
         if form.is_valid():
             im = form.cleaned_data['image']

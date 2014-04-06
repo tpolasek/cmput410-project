@@ -6,7 +6,7 @@ class AuthorSerializer(serializers.ModelSerializer):
     displayname = serializers.Field(source='user.username')
     image = serializers.Field(source="image_url")
 
-    url = serializers.URLField(source="host",max_length=256)
+    url = serializers.URLField(max_length=256)
     guid = serializers.CharField(max_length=256)
     github = serializers.CharField(max_length=30)
 
