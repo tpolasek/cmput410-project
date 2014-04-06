@@ -5,12 +5,19 @@ How to Deploy on VM
 ========
 How to Deploy DJango on VM:
 >ssh btrinh1@ohaton.cs.ualberta.ca
+
 >ssh user@cs410.cs.ualberta.ca -p 41040
+
 >Password is ubersomething -- its not actually 'something' but you guys should know it, if not ask Benson.
+
 >cd ~/cmput410-project/BenHoboCo
+
 >sudo su
+
 >killall python
+
 >./deploy_vm &
+
 >disown
 
 How to Setup SSH tunnel to VM
