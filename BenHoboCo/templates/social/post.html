@@ -4,7 +4,7 @@
 	{% if user_post.author.user == request.user %}
 		<div class="col-md-2">
 			<div class="page-header">
-				<h2><strong> My Posts </strong></h2>		
+				<h2><strong> My Posts </strong></h2>
 			</div>
 			<div class="list-group">
 				<p><a href="/posts/create" class="btn btn-success btn-block">Create New Post</a></p>
@@ -22,7 +22,7 @@
 			<h3><a href="/authors/{{user_post.author.guid}}/"><span class="glyphicon glyphicon-user"></span> {{user_post.author.user.username}}</a>  <small>at {{user_post.pubDate}}</small></h3>
 		</div>
 		<div class="well">
-			<p>{{user_post.content | safe}}</p>
+			<p>{{ user_post.content }}</p>
 		</div>
 		<hr/>
 		<div class="row">

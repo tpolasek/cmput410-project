@@ -1,5 +1,6 @@
 {% extends 'social/base.html' %}
 {% block block_body %}
+{% load crispy_forms_tags %}
 
 <div class="row">
 	<div class="page-header">
@@ -13,49 +14,7 @@
 </div>
 {% endif %}
 <div class="row col-md-9 col-md-offset-1">
-	<form method="POST" action="/posts/create/" role="form">
-		{% csrf_token %}
-		<!-- error messages for invalid post stuff here -->
-		<div class="row">
-			<div class="form-group">
-				<label for="title" class="control-label">Title</label>
-				<input type="text" name="title" class="form-control" placeholder="Enter Title"/>
-			</div>
-
-			<div class="form-group">
-				<label for="content" class="control-label">Content</label><br>
-
-				<div class="btn-group" data-toggle="buttons">
-					<label class="btn btn-primary">
-						<input id="text_content" type="radio" name="content_type" value="text" checked>Text
-					</label>
-					<label class="btn btn-primary">
-						<input type="radio" name="content_type" value="markup" id="markup">Markup
-					</label>
-					<label class="btn btn-primary">
-						<input type="radio" name="content_type" value="html" id="html">Html
-					</label>
-				</div>
-				<textarea class="form-control" name="content" placeholder="Enter Content" rows="6"></textarea>
-			</div>
-
-			<div class="form-group col-md-4">
-				<label for="access" class="control-label">Accessibility Type</label>
-				<select name="access" class="form-control">
-					<option value="PUBLIC">Public</option>
-					<option value="PRIVATE">Private</option>
-					<option value="private_to_another">Private To another author</option>
-					<option value="SERVERONLY">Friends on this host</option>
-					<option value="FRIENDS">Friends</option>
-					<option value="FOAF">Friends of friends</option>
-				</select>
-			</div>
-		</div>
-		<div class="row form-group">
-			<input type="submit" class="btn btn-primary" value="Create Post"/>
-			<a href="/authors/{{ author.user.username }}/posts" class="btn btn-default">Cancel</a>
-		</div>
-	</form>
+	{{ crispy form }}
 </div>
 
 <script>

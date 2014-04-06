@@ -39,6 +39,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'crispy_forms',
     'solo',
     'core',
     'south',
@@ -46,7 +47,6 @@ INSTALLED_APPS = (
     'posts',
     'authors',
     'friends',
-    'crispy_forms',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -76,6 +76,8 @@ DATABASES = {
         'PORT':'3306',
     }
 }
+
+CRISPY_TEMPLATE_PACK = 'bootstrap3'
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.6/topics/i18n/
