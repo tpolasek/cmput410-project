@@ -5,9 +5,7 @@ from .views import CreatePost
 
 urlpatterns = patterns('',
     url(r'^$', posts, name="posts"),
-    url(r'^(?P<post_id>.*?)/$', posts, name="posts"),
-    url(regex=r'^(?P<post_id>.*?)/comment/$', view=add_comment, name="add_comment"),
-    url(r'^(?P<post_id>.*?)/delete/$', delete_post, name="delete_comment"),
+    url(r'^(?P<post_id>\d+)/delete/$', delete_post, name="delete_comment"),
     url(r'^author/(?P<author_guid>\d+)/$', get_author_posts, name="author_posts"),
 
     url(
@@ -15,4 +13,7 @@ urlpatterns = patterns('',
         view = CreatePost.as_view(),
         name = "create_post"
     ),
+
+    url(regex=r'^(?P<post_id>.*?)/comment/$', view=add_comment, name="add_comment"),
+    url(r'^(?P<post_id>.*?)/$', posts, name="posts"),
 )
