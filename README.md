@@ -36,7 +36,7 @@ teschnei
 
 Web Service API & Documentation 
 ================
-TODO
+https://github.com/tpolasek/cmput410-project/wiki/API
 
 
 AJAX Documentation
