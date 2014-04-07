@@ -60,7 +60,7 @@ class FriendDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = AuthorSerializer
 
     permissions_classes = [
-        permissions.AllowAny
+        permissions.IsAuthenticated
     ]
 
 class FriendCompare(APIView):
@@ -102,7 +102,7 @@ class ImageList(generics.ListCreateAPIView):
     model = Image
     serializer_class = ImageSerializer
     permission_classes = [
-        permissions.AllowAny
+        permissions.IsAuthenticated
     ]
 
     def get_queryset(self):
@@ -114,7 +114,7 @@ class ImageDetail(generics.RetrieveUpdateDestroyAPIView):
     model = Image
     serializer_class = ImageSerializer
     permissions_classes = [
-        permissions.AllowAny
+        permissions.IsAuthenticated
     ]
 
 ##POST SECTION
@@ -124,7 +124,7 @@ class PostList(generics.ListCreateAPIView):
     model = Post
     serializer_class = PostSerializer
     permissions_classes = [
-        permissions.AllowAny
+        permissions.IsAuthenticated
     ]
 
     def get_queryset(self):
@@ -151,7 +151,7 @@ class PostDetail(generics.RetrieveUpdateDestroyAPIView):
     model = Post
     serializer_class = PostSerializer
     permissions_classes = [
-        permissions.AllowAny
+        permissions.IsAuthenticated
     ]
     lookup_field = 'guid'
 
