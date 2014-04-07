@@ -68,7 +68,7 @@ def get_author(request, author_guid = None):
         # IN HERE WE ONLY WANT TO SEE THE FRIEND POSTS AND MY POSTS
         # WE ONLY SHOW ALL PUBLIC POSTS IN THE INDEX PAGE
         #First get all the posts that are public
-        current_user_friends = request.user.author.friends.all()
+        current_user_friends = [f.author for f in request.user.author.friends.all()]
         public_posts = posts.filter(visibility="PUBLIC")
 
         #Visible to friends

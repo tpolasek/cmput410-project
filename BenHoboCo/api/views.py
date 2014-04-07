@@ -146,6 +146,25 @@ class PostList(generics.ListCreateAPIView):
         # from here we will retrieve all "PUBLIC" Posts
         return queryset.filter(visibility = "PUBLIC" )
 
+class PostsVisibileToAuthor(generics.ListAPIView):
+    model = Post
+    serializer_class = PostSerializer
+
+    def get_queryset(self):
+        queryset = super(PostsVisibileToAuthor,self).get_queryset()
+
+        current_user_friends = [f.author for f in self.request.user.author.friends.all()]
+        public_posts = queryset.filter(visibility="PUBLIC")
+
+        #Visible to friends
+        friend_posts = queryset.filter(visibility="FRIENDS").filter(author__in = current_user_friends )
+
+        private_posts = queryset.filter(visibility="PRIVATE").filter(author = self.request.user.author )
+
+        posts = public_posts | friend_posts | private_posts 
+
+        return posts
+
 class AuthorPostList(generics.ListAPIView):
     model = Post
     serializer_class = PostSerializer
