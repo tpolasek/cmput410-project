@@ -23,7 +23,7 @@ class CreatePost(LoginRequiredMixin,CreateView):
         form.instance.author = self.request.user.author
         form.instance.save()
 
-        form.instance.source = "http://%s/posts/%s" % ( self.request.META['HTTP_HOST'], form.instance.guid )
+        form.instance.source = "http://%s/posts/%s" % ( self.request.META['HTTP_HOST'], form.instance.id )
         form.instance.origin = form.instance.source
 
         c = form.instance.content
