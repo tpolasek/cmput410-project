@@ -95,7 +95,7 @@ def add_friend(request, author_guid):
                 # Send the friend request
                 if( new_friend_location == settings.ALLOWED_HOSTS[0] ): # Local
                     friended_author = Author.objects.get( guid=new_friend_guid )
-                    print "Adding friend: ", friended_author.get_full_name()
+                    
                     new_friend_request = FriendRequest( author=a, friend_name=friended_author.get_full_name(), host=friended_author.host, friend_guid=friended_author.guid, author_guid=friended_author.guid )
                     new_friend_request.save()
                 else: #Remote
@@ -103,7 +103,9 @@ def add_friend(request, author_guid):
                     r = requests.post("%s/api/friendrequest"%(new_friend_location), data=remote_author_json)
                     print "Remote friend request reponse code: %s" % (r.status_code)
 
-                new_friend = Friend(friend_name=new_friend_name, host=new_friend_location, friend_guid=new_friend_guid, author=a)
+            if request.user.is_authenticated():
+                friendingAuthor = Author.objects.get(guid = new_friend_guid)
+                new_friend = Friend(friend_name=a.get_full_name(), host=settings.ALLOWED_HOSTS[0], friend_guid=a.guid, author=friendingAuthor)
                 new_friend.save()
 
     return HttpResponseRedirect('/friends/')
@@ -168,4 +170,4 @@ def accept_friend_request(request, friend_id):
         new_friend.save()
         friendRequest.delete()
 
-    return render_to_response('social/friends.html', context_dict, context)
+    return HttpResponseRedirect('/friends')
