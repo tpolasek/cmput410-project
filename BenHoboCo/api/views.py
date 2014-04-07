@@ -22,7 +22,7 @@ class AuthorList(generics.ListCreateAPIView):
     model = Author
     serializer_class = AuthorSerializer
     permissions_classes = [
-        permissions.AllowAny
+        permissions.IsAuthenticatedOrReadOnly
     ]
 
 # GET: Returns the JSON representation of the specific Author.
@@ -34,7 +34,7 @@ class AuthorDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = AuthorSerializer
     lookup_field = 'guid'
     permissions_classes = [
-        permissions.AllowAny
+        permissions.IsAuthenticated
     ]
 
 ##FRIENDS SECTION
@@ -74,11 +74,13 @@ class FriendCompare(APIView):
 
         return Response(dict)
 
-class FriendRequest(APIView):
+class FriendRequest(generics.CreateAPIView):
     def post(self, request, *args, **kwargs):
         serializer = FriendRequestSerializer(data=request.DATA)
 
-        dict = {}
+
+
+        dict = {'success':True}
 
         return Response(dict)
 

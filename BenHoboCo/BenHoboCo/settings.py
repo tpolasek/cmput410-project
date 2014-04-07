@@ -26,7 +26,10 @@ DEBUG = True
 TEMPLATE_DEBUG = True
 
 # NOTE: Local server has to be in the first position!
-ALLOWED_HOSTS = ['127.0.0.1:8000']
+ALLOWED_HOSTS = [
+    '127.0.0.1:8000',
+    'cs410.cs.ualberta.ca:41011',
+]
 
 
 # Application definition

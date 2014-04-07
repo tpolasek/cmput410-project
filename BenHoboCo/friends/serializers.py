@@ -18,11 +18,14 @@ class FriendSerializer(serializers.ModelSerializer):
 class FriendRequestSerializer(serializers.ModelSerializer):
 
     author = AuthorSerializer()
+    
     displayname = serializers.CharField(max_length=128,source='friend_name')
     host = serializers.CharField(max_length=128)
     id = serializers.CharField(max_length=128, source='friend_guid')
     url = serializers.URLField(max_length=256)
 
+    friend = AuthorSerializer()
+
     class Meta:
         model = FriendRequest
-        fields = ['author','displayname','host','id','url']
+        fields = ['author','displayname','host','id','url','friend']
