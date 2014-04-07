@@ -85,6 +85,10 @@ class FriendCompare(APIView):
         return Response(dict)
 
 class FriendRequestView(APIView):
+    permissions_classes = [
+        permissions.AllowAny
+    ]
+    
     def post(self, request, *args, **kwargs):
 
         source_guid = request.DATA.get('source_guid')
