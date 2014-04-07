@@ -12,13 +12,9 @@ How to Deploy DJango on VM:
 
 >cd ~/cmput410-project/BenHoboCo
 
->sudo su
+>git pull
 
->supervisorctl
-
->>restart django
-
-
+>sudo supervisorctl "restart django"
 
 How to Setup SSH tunnel to VM
 ========
