@@ -41,7 +41,7 @@ https://github.com/tpolasek/cmput410-project/wiki/API
 
 AJAX Documentation
 ================
-https://github.com/tpolasek/cmput410-project/wiki/AJAX
+https://github.com/tpolasek/cmput410-project/wiki/Ajax-Documentation
 
 
 
