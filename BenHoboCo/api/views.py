@@ -69,9 +69,19 @@ class FriendCompare(APIView):
         guid_1 = kwargs['guid_1']
         guid_2 = kwargs['guid_2']
 
-        dict = { 'query':'friends', 'comparing': [ guid_1, guid_2 ], 'friends':'YES'}
-        ##TODO Insert function here to compare the guids and check if they're friends
+        are_friends = "NO"
 
+        try:
+            author1 = Author.objects.get(guid=guid_1)
+
+            a1_friends = [ f.guid for f in author1.friends.all() ]
+            if guid_2 in a1_friends:
+                are_friends = "YES"
+        except:
+            pass
+
+        dict = { 'query':'friends', 'comparing': [ guid_1, guid_2 ], 'friends':are_friends}
+       
         return Response(dict)
 
 class FriendRequestView(APIView):
