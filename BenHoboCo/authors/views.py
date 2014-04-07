@@ -63,13 +63,13 @@ def get_author(request, author_guid = None):
         #users that are registered and finding the authors that way, we will only
         #have local friends atm.
 
-        posts = Post.objects.all()
+        posts = Post.objects.filter(author=a)
     
         # IN HERE WE ONLY WANT TO SEE THE FRIEND POSTS AND MY POSTS
         # WE ONLY SHOW ALL PUBLIC POSTS IN THE INDEX PAGE
         #First get all the posts that are public
         current_user_friends = request.user.author.friends.all()
-        public_posts = posts.filter(visibility="PUBLIC").filter(author__in = current_user_friends )
+        public_posts = posts.filter(visibility="PUBLIC")
 
         #Visible to friends
         friend_posts = posts.filter(visibility="FRIENDS").filter(author__in = current_user_friends )
@@ -77,6 +77,8 @@ def get_author(request, author_guid = None):
         private_posts = posts.filter(visibility="PRIVATE").filter(author = request.user.author )
 
         posts = public_posts | friend_posts | private_posts 
+
+        print posts
 
         images = Image.objects.filter(author=a)
         friend_guids.append(Author.objects.get(user=request.user).guid)
