@@ -15,12 +15,21 @@
             <h2><span class="glyphicon glyphicon-heart"></span> My Friends </h2>
         </div>
         <div class="row">
-            <div class="col-md-6">
-                <h4 class="text-center">Friend Requests</h4>
-            </div>
-            <div class="col-md-6">
-                <!-- We will populate this with friend requests later. -->
-            </div>
+            <h4 class="page-header text-center">Friend Requests</h4>
+                {% if user_friends == None %}
+                {% else %}
+                    {% for request in friend_requests %}
+                        <div class="panel panel-default">
+                            <div class="panel-body">
+                                <div class="col-md-6">
+                                    <p>{{request.friend_name}}</p>
+                                </div>
+                                <a href="acceptrequest/{{request.friend_guid}}">Accept?</a>
+                            </div>
+                        </div>
+                    {% endfor %}
+                    <!-- Populate this with friends. -->
+                {% endif %}
         </div>
         <hr/>
         <div class="row">
@@ -30,9 +39,20 @@
                     <p class="text-center"> You can make some <a href="/authors">here</a>.</p>
                 {% else %}
                     {% for friend in user_friends %}
-                        <p class="text-center"> This is your friend: {{friend.friend_name}} </p>
+                        <div class="media">
+                            <a class="pull-left" href="{{friend.url}}">
+                              {% if a.image %}
+                                <img class="media-object" style="width: 75%; height: auto" src="{{ a.image.url | urlencode }}"/>
+                              {% else %}
+                                <img class="media-object" src="/static/img/placeholder.png"/>
+                              {% endif %}
+                            </a>
+                          <div class="media-body">
+                              <h3 class="media-heading">{{ friend.friend_name }}</h3>
+                              <p>{{friend.host}}</p>
+                          </div>
+                      </div>
                     {% endfor %}
-                    <!-- Populate this with friends. -->
                 {% endif %}
             </div>
         </div>

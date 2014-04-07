@@ -91,11 +91,12 @@ def add_friend(request, author_guid):
             if not Friend.objects.filter(author=a, friend_guid=new_friend_guid):
 
                 # Try aren't a friend already
-
+                print "Not a friend already!"
                 # Send the friend request
                 if( new_friend_location == settings.ALLOWED_HOSTS[0] ): # Local
                     friended_author = Author.objects.get( guid=new_friend_guid )
-                    new_friend_request = FriendRequest( author=friended_author, friend_name=a.get_full_name(), host=a.host, friend_guid=a.guid, author_guid=friended_author.guid )
+                    print "Adding friend: ", friended_author.get_full_name()
+                    new_friend_request = FriendRequest( author=a, friend_name=friended_author.get_full_name(), host=friended_author.host, friend_guid=friended_author.guid, author_guid=friended_author.guid )
                     new_friend_request.save()
                 else: #Remote
                     remote_author_json = { "author": { "id": new_friend_guid, "host": new_friend_location, "displayname": new_friend_name }, "friend": a.json() }
@@ -105,7 +106,7 @@ def add_friend(request, author_guid):
                 new_friend = Friend(friend_name=new_friend_name, host=new_friend_location, friend_guid=new_friend_guid, author=a)
                 new_friend.save()
 
-    return HttpResponseRedirect('/authors/%s/friends/' % author_guid)
+    return HttpResponseRedirect('/friends/')
 
 @login_required
 def friends(request, friend_id = None):
@@ -121,10 +122,13 @@ def friends(request, friend_id = None):
     else:
         a = Author.objects.get(user = user)
         f = Friend.objects.filter(author = a)
+        friend_requests = FriendRequest.objects.filter(author = a)
         if not f:
             context_dict['user_friends'] = None
         else:
             context_dict['user_friends'] = f
+        if friend_requests:
+            context_dict['friend_requests'] = friend_requests
 
     return render_to_response('social/friends.html', context_dict, context)
 
@@ -151,3 +155,17 @@ def get_author_friends(request, author_guid, friend_guid = None):
 
     #no content
     return render_to_response('social/friends.html', context_dict, context )
+
+@login_required
+def accept_friend_request(request, friend_id):
+    context = RequestContext(request)
+    a = Author.objects.get(user = request.user)
+    context_dict = {}
+
+    friendRequest = FriendRequest.objects.get(author = a, friend_guid = friend_id)
+    if friendRequest is not None:
+        new_friend = Friend(friend_name=friendRequest.friend_name, host=friendRequest.host, friend_guid=friendRequest.friend_guid, author=a)
+        new_friend.save()
+        friendRequest.delete()
+
+    return render_to_response('social/friends.html', context_dict, context)
