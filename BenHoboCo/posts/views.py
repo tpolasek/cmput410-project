@@ -25,6 +25,20 @@ class CreatePost(LoginRequiredMixin,CreateView):
 
         form.instance.source = "http://%s/posts/%s" % ( self.request.META['HTTP_HOST'], form.instance.guid )
         form.instance.origin = form.instance.source
+
+        c = form.instance.content
+        t = form.instance.content_type
+
+        if t == "text/x-markdown":
+            import markdown2
+            c = markdown2.markdown(c)
+        elif t == "text/plain":
+            c = c
+        else:
+            pass
+
+        form.instance.content = c
+
         form.instance.save()
 
         return super(CreatePost,self).form_valid(form)
@@ -120,7 +134,7 @@ def create_post(request, author_name = None ):
         p = Post(author=a, visibility=access, content=c, title=post_title)
         p.content_type = t
         p.save()
-        p.source = "http://%s/posts/%s" % ( request.META['HTTP_HOST'], p.guid )
+        p.source = "http://%s/posts/%s" % ( request.META['HTTP_HOST'], p.id )
         p.origin = p.source
         p.save()
 
