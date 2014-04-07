@@ -93,7 +93,7 @@ def posts(request, post_id = None):
     context_dict = {}
     user = request.user
     context_dict['user'] = user
-
+    context_dict['author'] = Author.objects.get(user = request.user)
     if post_id is not None:
         # Single post.
         try:
