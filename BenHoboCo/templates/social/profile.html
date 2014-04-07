@@ -18,8 +18,8 @@
 					{% csrf_token %}
 					
 					{% if not author.guid in our_friends %}
-					<input type="hidden" name="friend_name" value="{{author.get_full_name}}"/>
-					<input type="hidden" name="friend_guid" value="{{author.guid}}"/>
+					<input type="hidden" name="friend_name" value="{{logged_in_user.get_full_name}}"/>
+					<input type="hidden" name="friend_guid" value="{{logged_in_user.guid}}"/>
 					<input type="hidden" name="friend_location" value=""/>
 					<input type="submit" value="Add Friend" class="btn btn-success"/>
 					{% endif %}

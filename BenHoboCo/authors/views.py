@@ -37,7 +37,7 @@ def get_author(request, author_guid = None):
         u = a.user
 
     if request.method == "GET":
-
+        loggedInUser = Author.objects.get(user = request.user)
         #in my profile I want to see posts that are private to me
         #posts that are from my friends that are shared as "friends of friends"
         #posts that are shared to me by local_friends
@@ -83,7 +83,8 @@ def get_author(request, author_guid = None):
         images = Image.objects.filter(author=a)
         friend_guids.append(Author.objects.get(user=request.user).guid)
 
-        context_dict = {'author':a, 'user_posts': posts, 'our_friends': friend_guids, 'user_images': images}
+        context_dict = {'author':a, 'user_posts': posts, 'our_friends': friend_guids, 'user_images': images, 'logged_in_user' : loggedInUser}
+
 
         return render_to_response('social/profile.html', context_dict, context )
     elif request.method == "POST":

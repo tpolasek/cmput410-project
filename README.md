@@ -1,5 +1,26 @@
 CMPUT 410 Project - Group 4
 ================
+ciwong
+
+btrinh1
+
+remco
+
+tpolasek
+
+teschnei
+
+
+
+Web Service API & Documentation 
+================
+https://github.com/tpolasek/cmput410-project/wiki/API
+
+
+AJAX Documentation
+================
+https://github.com/tpolasek/cmput410-project/wiki/Ajax-Documentation
+
 
 How to Deploy on VM
 ========
@@ -20,29 +41,6 @@ How to Setup SSH tunnel to VM
 ========
 Then if you want to access the webserver from your machine at home, running the following SSH tunnel command (OSX syntax)
 >ssh -L 8080:cs410.cs.ualberta.ca:41048 -p 22 -l btrinh1 -N ohaton.cs.ualberta.ca  
-
-Group Members
-=========
-ciwong
-
-btrinh1
-
-remco
-
-tpolasek
-
-teschnei
-
-
-Web Service API & Documentation 
-================
-https://github.com/tpolasek/cmput410-project/wiki/API
-
-
-AJAX Documentation
-================
-https://github.com/tpolasek/cmput410-project/wiki/Ajax-Documentation
-
 
 
 Setup Documentation
