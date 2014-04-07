@@ -88,7 +88,7 @@ class FriendRequestView(APIView):
     permissions_classes = [
         permissions.AllowAny
     ]
-    
+
     def post(self, request, *args, **kwargs):
 
         source_guid = request.DATA.get('source_guid')
@@ -153,11 +153,16 @@ class PostsVisibileToAuthor(generics.ListAPIView):
     def get_queryset(self):
         queryset = super(PostsVisibileToAuthor,self).get_queryset()
 
-        current_user_friends = [f.author for f in self.request.user.author.friends.all()]
-        public_posts = queryset.filter(visibility="PUBLIC")
+        friends = self.request.user.author.friends.all()
+        friend_guids = [ friend.friend_guid for friend in friends ]
+
+        friends_as_authors = []
+        friends_as_authors = [ Author.objects.get(guid=fn) for fn in friend_guids ]
+
+        public_posts = queryset.filter(visibility="PUBLIC").filter(author__in = friends_as_authors )
 
         #Visible to friends
-        friend_posts = queryset.filter(visibility="FRIENDS").filter(author__in = current_user_friends )
+        friend_posts = queryset.filter(visibility="FRIENDS").filter(author__in = friends_as_authors )
 
         private_posts = queryset.filter(visibility="PRIVATE").filter(author = self.request.user.author )
 
