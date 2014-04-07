@@ -14,11 +14,11 @@ How to Deploy DJango on VM:
 
 >sudo su
 
->killall python
+>supervisorctl
 
->./deploy_vm &
+>>restart django
 
->disown
+
 
 How to Setup SSH tunnel to VM
 ========
