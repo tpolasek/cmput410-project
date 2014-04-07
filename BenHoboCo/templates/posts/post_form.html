@@ -1,0 +1,26 @@
+{% extends 'social/base.html' %}
+{% load crispy_forms_tags %}
+{% block block_body %}
+
+<div class="row">
+	<div class="page-header">
+		<h1>Create Post</h1>
+	</div>
+</div>
+
+{% if success %}
+<div class="alert alert-success">
+	Post created successfully!
+</div>
+{% endif %}
+<div class="row col-md-9 col-md-offset-1">
+	{% crispy form %}
+</div>
+
+<script>
+	function selectDefault(){
+		document.getElementById("text_content").click();
+	}
+</script>
+<body onload="selectDefault()">
+{% endblock %}
