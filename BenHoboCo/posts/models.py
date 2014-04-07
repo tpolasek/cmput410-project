@@ -32,7 +32,7 @@ class Post(models.Model):
 class Comment(models.Model):
     author = models.ForeignKey(Author)
     pubDate = models.DateTimeField(default=datetime.now)
-    post = models.ForeignKey(Post)
+    post = models.ForeignKey(Post, related_name="comments")
     comment = models.TextField()
 
     guid = UUIDField()
