@@ -26,6 +26,8 @@ class CreatePost(LoginRequiredMixin,CreateView):
         form.instance.source = "http://%s/posts/%s" % ( self.request.META['HTTP_HOST'], form.instance.id )
         form.instance.origin = form.instance.source
 
+        print form.instance.source
+
         c = form.instance.content
         t = form.instance.content_type
 
