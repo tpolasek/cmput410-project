@@ -23,8 +23,10 @@ class CreatePost(LoginRequiredMixin,CreateView):
         form.instance.author = self.request.user.author
         form.instance.save()
 
-        form.instance.source = "http://%s/posts/%s" % ( self.request.META['HTTP_HOST'], form.instance.guid )
+        form.instance.source = "http://%s/posts/%s" % ( self.request.META['HTTP_HOST'], form.instance.id )
         form.instance.origin = form.instance.source
+
+        print form.instance.source
 
         c = form.instance.content
         t = form.instance.content_type
@@ -93,7 +95,7 @@ def posts(request, post_id = None):
     context_dict = {}
     user = request.user
     context_dict['user'] = user
-
+    context_dict['author'] = Author.objects.get(user = request.user)
     if post_id is not None:
         # Single post.
         try:

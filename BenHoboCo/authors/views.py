@@ -62,12 +62,29 @@ def get_author(request, author_guid = None):
         #If the post is local then the user will be registered. Since we are only polling
         #users that are registered and finding the authors that way, we will only
         #have local friends atm.
-        p = Post.objects.filter( ~Q(visibility = "PRIVATE" )).filter(( Q(author = a) | Q(author__in = authors) ) )
+
+        posts = Post.objects.filter(author=a)
+    
+        # IN HERE WE ONLY WANT TO SEE THE FRIEND POSTS AND MY POSTS
+        # WE ONLY SHOW ALL PUBLIC POSTS IN THE INDEX PAGE
+        #First get all the posts that are public
+        current_user_friends = request.user.author.friends.all()
+        public_posts = posts.filter(visibility="PUBLIC")
+
+        #Visible to friends
+        friend_posts = posts.filter(visibility="FRIENDS").filter(author__in = current_user_friends )
+
+        private_posts = posts.filter(visibility="PRIVATE").filter(author = request.user.author )
+
+        posts = public_posts | friend_posts | private_posts 
+
+        print posts
 
         images = Image.objects.filter(author=a)
         friend_guids.append(Author.objects.get(user=request.user).guid)
 
-        context_dict = {'author':a, 'user_posts': p, 'our_friends': friend_guids, 'user_images': images, 'logged_in_user' : loggedInUser}
+        context_dict = {'author':a, 'user_posts': posts, 'our_friends': friend_guids, 'user_images': images, 'logged_in_user' : loggedInUser}
+
 
         return render_to_response('social/profile.html', context_dict, context )
     elif request.method == "POST":
@@ -129,6 +146,18 @@ def get_author_posts(request, author_guid ):
     context_dict['author'] = a
 
     posts = Post.objects.filter(author=a)
+    
+    #First get all the posts that are public
+    public_posts = posts.filter(visibility="PUBLIC")
+
+    #Visible to friends
+    current_user_friends = request.user.author.friends.all()
+    friend_posts = posts.filter(visibility="FRIENDS").filter(author__in = current_user_friends )
+
+    private_posts = posts.filter(visibility="PRIVATE").filter(author = request.user.author )
+
+    posts = public_posts | friend_posts | private_posts 
+
     context_dict['user_posts'] = posts
 
     return render_to_response('social/posts.html', context_dict, context )

@@ -63,17 +63,31 @@
                         });
                     });
                 </script>
-            {% endif %}
-			{% for post in posts %}
-			<a href="/posts/{{post.id}}" class="list-group-item">
-				<h2 class="list-group-item-heading">{{post.title}}</h2>
-				<h4 class="list-group-item-heading text-right">{{post.author.user.username}} <small>on {{post.pubDate}}</small></h4>
-				<div class="well">
-					<p class="list-group-item-text">{{post.content | safe}}</p>
-				</div>
-				<p class="list-group-item-text text-right"><small><strong>{{post.comment_set.all|length}} Comments</strong></small></p>
-			</a>
-			{% endfor %}
+            {% endif %}	
+		<div id="mainstuff"></div>
+			<script>
+			var loadPosts = function() {
+			$.getJSON( "api/posts/", function( data ) {
+					
+				var html = '';	
+				for(var i =0; i < data.length; i++){
+     					item = data[i];
+					html += ("<a href=\"/posts/"+item.guid+"\" class=\"list-group-item\">");
+					html += ("<h2 class=\"list-group-item-heading\">"+item.title+"</h2>");
+					html += ("<h4 class=\"list-group-item-heading text-right\">"+item.author.displayname+ " <small>on "+item.pubDate+"</small></h4>");	
+					html += ("<div class=\"well\">");
+					html += ("<p class=\"list-group-item-text\">"+item.content+"</p>");
+					html += ("</div>");
+					html += ("<p class=\"list-group-item-text text-right\"><small><strong>"+item.comments.length+" Comments</strong></small></p>");
+					html += ("</a>");
+				}
+				$("#mainstuff").html(html);
+				}
+			);
+			}
+			loadPosts();
+			setInterval(loadPosts, 1000);
+			</script>
 		</div>
 	</div>
 </div>
