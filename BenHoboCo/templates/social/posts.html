@@ -23,7 +23,7 @@
 						<h4 class="list-group-item-heading">{{post.title}}  <small>{{post.pubDate}}</small></h4>
 						<p class="text-right text-info">{{post.visibility}}</p>
 						<div class="well">
-							<p class="list-group-item-text">{{post.content}}</p>
+							<p class="list-group-item-text">{{post.content | safe}}</p>
 						</div>
 						<p class="list-group-item-text text-right"><small><strong>{{post.comment_set.all|length}} Comments</strong></small></p>
 					</a>

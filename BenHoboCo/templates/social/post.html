@@ -1,4 +1,5 @@
 {% extends 'social/base.html' %}
+{% load crispy_forms_tags %}
 {% block block_body %}
 <div class="row">
 	{% if user_post.author.user == request.user %}
@@ -22,7 +23,7 @@
 			<h3><a href="/authors/{{user_post.author.guid}}/"><span class="glyphicon glyphicon-user"></span> {{user_post.author.user.username}}</a>  <small>at {{user_post.pubDate}}</small></h3>
 		</div>
 		<div class="well">
-			<p>{{ user_post.content }}</p>
+			<p>{{ user_post.content | safe }}</p>
 		</div>
 		<hr/>
 		<div class="row">
@@ -42,15 +43,8 @@
 					<h4 class="text-center">Add Comment</h4>
 				</div>
 				<div class="row col-md-9">
-					<form method="POST" action="/posts/{{user_post.id}}/comment/" role="form">
-						{% csrf_token %}
-						<!-- error messages for invalid post stuff here -->
-						<div class="form-group">
-							<textarea class="form-control" name="content" placeholder="Enter Comment"></textarea>
-						</div>
-						<div class="form-group">
-							<input type="submit" class="btn btn-primary" value="Add Comment"/>
-						</div>
+					<form action="{% url 'add_comment' user_post.id %}" method="post">
+						{% crispy comment_form %}
 					</form>
 				</div>
 			</div>

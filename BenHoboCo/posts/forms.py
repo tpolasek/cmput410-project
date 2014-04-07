@@ -4,7 +4,9 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Fieldset, Submit, Div
 from crispy_forms.bootstrap import FormActions, StrictButton
 
-from .models import Post
+from django.core.urlresolvers import reverse_lazy
+
+from .models import Post, Comment
 from core.models import ACCESSIBILITY_TYPES
 
 CONTENT_TYPE = (
@@ -12,6 +14,29 @@ CONTENT_TYPE = (
     ('text/x-markdown','Markdown'),
     ('text/plain','Text'),
 )
+
+class CreateCommentForm(forms.ModelForm):
+
+    comment = forms.CharField(
+        label = "",
+        widget = forms.Textarea(attrs={'rows':5}),
+    )
+
+    def __init__(self, *args, **kwargs):
+        super(CreateCommentForm,self).__init__(*args,**kwargs)
+        self.helper = FormHelper(self)
+        self.helper.form_tag = False
+
+        self.helper.layout = Layout(
+            'comment',
+            FormActions(
+                StrictButton("Add Comment", css_class="btn-primary", type="submit"),
+            )
+        )
+
+    class Meta:
+        model = Comment
+        fields = ['comment']
 
 class CreatePostForm(forms.ModelForm):
 

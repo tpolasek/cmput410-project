@@ -9,7 +9,7 @@ from django.core.urlresolvers import reverse_lazy
 from authors.models import Author
 from posts.models import Post
 from .models import Comment
-from .forms import CreatePostForm
+from .forms import CreatePostForm, CreateCommentForm
 
 from django.views.generic import CreateView
 from braces.views import LoginRequiredMixin
@@ -45,15 +45,21 @@ class CreatePost(LoginRequiredMixin,CreateView):
 
 @login_required
 def add_comment(request, post_id):
-    context = RequestContext(request)
     if request.method == "POST":
-        u = request.user
-        commented_post = Post.objects.get(id = post_id)
-        author = Author.objects.get(user = u)
-        content = request.POST["content"]
+        comment_form = CreateCommentForm(request.POST)
 
-        c = Comment(author = author, comment = content, pubDate = datetime.now(), post = commented_post)
-        c.save()
+        if comment_form.is_valid():
+
+            u = request.user
+            commented_post = Post.objects.get(id = post_id)
+
+            comment = comment_form.save(commit=False)
+            comment.author = u.author
+            comment.post = commented_post
+            comment.save()
+
+       # c = Comment(author = author, comment = content, pubDate = datetime.now(), post = commented_post)
+        #c.save()
 
     return HttpResponseRedirect("/posts/" + post_id)
 
@@ -88,7 +94,6 @@ def posts(request, post_id = None):
     user = request.user
     context_dict['user'] = user
 
-
     if post_id is not None:
         # Single post.
         try:
@@ -97,6 +102,10 @@ def posts(request, post_id = None):
             p = Post.objects.get(guid = post_id )
 
         context_dict['user_post'] = p
+
+        comment_form = CreateCommentForm()
+        context_dict['comment_form'] = comment_form
+
         return render_to_response('social/post.html', context_dict, context)
     else:
         a = Author.objects.get(user = user)
