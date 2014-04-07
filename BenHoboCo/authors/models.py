@@ -28,3 +28,12 @@ class Author(models.Model):
 
     def get_full_name(self):
         return "%s %s" % ( self.user.first_name, self.user.last_name )
+
+    def json(self):
+        return dict (
+            id = self.guid,
+            host = self.host,
+            displayname = self.get_full_name(),
+            url = "%s/authors/%s" % (self.host, self.guid),
+            github = self.github
+        )

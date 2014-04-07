@@ -7,7 +7,7 @@ from images.serializers import ImageSerializer
 from posts.serializers import PostSerializer
 
 from authors.models import Author
-from friends.models import Friend
+from friends.models import Friend, FriendRequest
 from images.models import Image
 from posts.models import Post
 
@@ -22,7 +22,7 @@ class AuthorList(generics.ListCreateAPIView):
     model = Author
     serializer_class = AuthorSerializer
     permissions_classes = [
-        permissions.AllowAny
+        permissions.IsAuthenticatedOrReadOnly
     ]
 
 # GET: Returns the JSON representation of the specific Author.
@@ -34,7 +34,7 @@ class AuthorDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = AuthorSerializer
     lookup_field = 'guid'
     permissions_classes = [
-        permissions.AllowAny
+        permissions.IsAuthenticated
     ]
 
 ##FRIENDS SECTION
@@ -49,7 +49,7 @@ class FriendList(generics.ListCreateAPIView):
     def get_queryset(self):
         queryset = super(FriendList, self).get_queryset()
         author = self.request.user.author
-        return queryset.filter(author = author )
+        return queryset.filter( author = author )
 
 # GET: Returns the JSON representation of the specific friend from the specific Author.
 # POST: Updates the specified friend with the specified JSON representation
@@ -60,7 +60,7 @@ class FriendDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = AuthorSerializer
 
     permissions_classes = [
-        permissions.AllowAny
+        permissions.IsAuthenticated
     ]
 
 class FriendCompare(APIView):
@@ -69,16 +69,40 @@ class FriendCompare(APIView):
         guid_1 = kwargs['guid_1']
         guid_2 = kwargs['guid_2']
 
-        dict = { 'query':'friends', 'comparing': [ guid_1, guid_2 ], 'friends':'YES'}
-        ##TODO Insert function here to compare the guids and check if they're friends
+        are_friends = "NO"
 
+        try:
+            author1 = Author.objects.get(guid=guid_1)
+
+            a1_friends = [ f.guid for f in author1.friends.all() ]
+            if guid_2 in a1_friends:
+                are_friends = "YES"
+        except:
+            pass
+
+        dict = { 'query':'friends', 'comparing': [ guid_1, guid_2 ], 'friends':are_friends}
+       
         return Response(dict)
 
-class FriendRequest(APIView):
+class FriendRequestView(APIView):
     def post(self, request, *args, **kwargs):
-        serializer = FriendRequestSerializer(data=request.DATA)
 
-        dict = {}
+        source_guid = request.DATA.get('source_guid')
+        dest_guid = request.DATA.get('dest_guid')
+        url = request.DATA.get('url')
+        display_name = request.DATA.get('display_name')
+        host = request.DATA.get('host')
+
+        try:
+            a = Author.objects.get(guid=dest_guid)
+            print a
+            fr = FriendRequest(author = a, url = url, friend_name = display_name, host = host )
+            fr.save()
+        except Exception as e:
+            print "Error: %s" % str(e)
+            return Response({'success':False})
+
+        dict = {'success':True}
 
         return Response(dict)
 
@@ -88,7 +112,7 @@ class ImageList(generics.ListCreateAPIView):
     model = Image
     serializer_class = ImageSerializer
     permission_classes = [
-        permissions.AllowAny
+        permissions.IsAuthenticated
     ]
 
     def get_queryset(self):
@@ -100,7 +124,7 @@ class ImageDetail(generics.RetrieveUpdateDestroyAPIView):
     model = Image
     serializer_class = ImageSerializer
     permissions_classes = [
-        permissions.AllowAny
+        permissions.IsAuthenticated
     ]
 
 ##POST SECTION
@@ -110,7 +134,7 @@ class PostList(generics.ListCreateAPIView):
     model = Post
     serializer_class = PostSerializer
     permissions_classes = [
-        permissions.AllowAny
+        permissions.IsAuthenticated
     ]
 
     def get_queryset(self):
@@ -137,7 +161,7 @@ class PostDetail(generics.RetrieveUpdateDestroyAPIView):
     model = Post
     serializer_class = PostSerializer
     permissions_classes = [
-        permissions.AllowAny
+        permissions.IsAuthenticated
     ]
     lookup_field = 'guid'
 

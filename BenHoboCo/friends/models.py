@@ -35,6 +35,11 @@ class FriendRequest(models.Model):
 
     url = models.URLField(max_length=256) #This is the url to the friends profile page
 
-
     def __unicode__(self):
-        return self.name
+        return self.author.user.username
+
+    def get_author_guid(self):
+        if self.author:
+            return self.author.guid
+        else:
+            return None

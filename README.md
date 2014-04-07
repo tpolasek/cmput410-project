@@ -36,12 +36,12 @@ teschnei
 
 Web Service API & Documentation 
 ================
-TODO
+https://github.com/tpolasek/cmput410-project/wiki/API
 
 
 AJAX Documentation
 ================
-Github Activity on a User Profile uses Jquery/AJAX
+https://github.com/tpolasek/cmput410-project/wiki/Ajax-Documentation
 
 
 

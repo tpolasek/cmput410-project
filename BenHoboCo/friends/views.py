@@ -33,7 +33,7 @@ def search_friend(request):
 
         # Remote host
         else:
-            request = requests.get("%s/api/authors" % (host))
+            request = requests.get("http://%s/api/authors" % (host))
             authors_json = request.json()
 
         # At this point we should have an authors JSON object
