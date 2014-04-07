@@ -1,7 +1,7 @@
 from django.conf.urls import patterns, url, include
 
 from .views import AuthorList, AuthorDetail
-from .views import FriendList, FriendDetail, FriendCompare, FriendRequest
+from .views import FriendList, FriendDetail, FriendCompare, FriendRequestView
 from .views import ImageList, ImageDetail
 from .views import PostList, AuthorPostList, PostDetail
 
@@ -25,5 +25,5 @@ urlpatterns = patterns('',
     url(r'^authors/',include(author_urls)),
     url(r'^posts/',include(post_urls)),
     url(r'^friends/',include(friends_urls)),
-    url(r'^friendrequest/$', FriendRequest.as_view(), name="friendrequest")
+    url(r'^friendrequest/$', FriendRequestView.as_view(), name="friendrequest")
 )

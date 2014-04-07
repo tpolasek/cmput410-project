@@ -37,3 +37,9 @@ class FriendRequest(models.Model):
 
     def __unicode__(self):
         return self.author.user.username
+
+    def get_author_guid(self):
+        if self.author:
+            return self.author.guid
+        else:
+            return None

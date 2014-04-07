@@ -7,7 +7,7 @@ from images.serializers import ImageSerializer
 from posts.serializers import PostSerializer
 
 from authors.models import Author
-from friends.models import Friend
+from friends.models import Friend, FriendRequest
 from images.models import Image
 from posts.models import Post
 
@@ -49,7 +49,7 @@ class FriendList(generics.ListCreateAPIView):
     def get_queryset(self):
         queryset = super(FriendList, self).get_queryset()
         author = self.request.user.author
-        return queryset.filter(author = author )
+        return queryset.filter( author = author )
 
 # GET: Returns the JSON representation of the specific friend from the specific Author.
 # POST: Updates the specified friend with the specified JSON representation
@@ -74,11 +74,23 @@ class FriendCompare(APIView):
 
         return Response(dict)
 
-class FriendRequest(generics.CreateAPIView):
+class FriendRequestView(APIView):
     def post(self, request, *args, **kwargs):
-        serializer = FriendRequestSerializer(data=request.DATA)
 
+        source_guid = request.DATA.get('source_guid')
+        dest_guid = request.DATA.get('dest_guid')
+        url = request.DATA.get('url')
+        display_name = request.DATA.get('display_name')
+        host = request.DATA.get('host')
 
+        try:
+            a = Author.objects.get(guid=dest_guid)
+            print a
+            fr = FriendRequest(author = a, url = url, friend_name = display_name, host = host )
+            fr.save()
+        except Exception as e:
+            print "Error: %s" % str(e)
+            return Response({'success':False})
 
         dict = {'success':True}
 
